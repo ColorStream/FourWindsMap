@@ -21,5 +21,5 @@ from rest_framework import routers, serializers, viewsets
 
 urlpatterns = [
     path('markers/', views.MarkersCreate.as_view(), name="marker-create-view"),
-
+    path('markerslist', views.markers_list),
 ]

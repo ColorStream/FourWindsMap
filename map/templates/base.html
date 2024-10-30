@@ -69,11 +69,18 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Add Marker</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          ...
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Year</label>
+                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="1960 - Now">
+              </div>
+              <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Story</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+              </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -95,7 +102,7 @@
     try {
         const response = await fetch(url);
         if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
+        
         }
 
         const json = await response.json();
@@ -122,9 +129,13 @@
     })
     */
     
-    map.on('click', (event)=> {
+    map.on('dblclick', (event)=> {
         L.marker([event.latlng.lat , event.latlng.lng]).addTo(map);
     })
+
+    fetch('http://127.0.0.1:8000/map-api/markerslist') // api for the get request
+    .then(response => response.json())
+    .then(data => console.log(data));
 
 
     var popup = L.popup();
@@ -132,18 +143,15 @@
     function onMapClick(e) {
         popup
             .setLatLng(e.latlng)
-            .setContent("You clicked the map at " + e.latlng.toString())
+            .setContent('<p>Submit a marker?</p><button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#markerModal"> test </button>')
             .openOn(map);
     }
 
-    map.on('click', onMapClick);
+    map.on('dblclick', onMapClick);
 
     var marker = L.marker([27.9, -81.7]).addTo(map);
     marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
 
-    addEventListener("dblclick", (event) => {
-
-    });
    
     var addmarker = L.marker();
     function addMarkerDrag(e){
