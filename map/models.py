@@ -1,9 +1,10 @@
-from django.contrib.gis.db import models
+from django.db import models
 
 # Create your models here.
 
 class Markers(models.Model):
-    coordinates = models.PointField(null=False)
+    latitude = models.IntegerField(null=False)
+    longitude = models.IntegerField(null=False)
     fromyear = models.SmallIntegerField(null=True) #be sure to have form validation (must be > 1950 || )
     storytext = models.CharField(max_length=350, null=False)
     date_posted = models.DateTimeField(auto_now_add=True)

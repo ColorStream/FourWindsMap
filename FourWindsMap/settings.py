@@ -37,12 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.gis',
     'map.apps.MapConfig',
     'text.apps.TextConfig',
     'moderation.apps.ModerationConfig',
     'rest_framework',
-    'rest_framework_gis',
 ]
 
 MIDDLEWARE = [
@@ -74,10 +72,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'FourWindsMap.wsgi.application'
-
-#GDAL_LIBRARY_PATH = r"C:\Users\amand\Documents\GitHub\fourWindsMapParent\thesisvenv\Lib\site-packages\osgeo\geos.dll" #WHY WON'T GDAL WORK
-
-#GDAL_LIBRARY_PATH = r"C:\Users\amand\Documents\GitHub\fourWindsMapParent\thesisvenv\Scripts\gdal307.dll"
 
 
 # Database
