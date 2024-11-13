@@ -1,3 +1,4 @@
+{% load rest_framework %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -98,7 +99,7 @@
 <script>
 
     async function getData() { //example from fetch api() documentation
-    const url = "http://127.0.0.1:8000/map-api/markers/";
+    const url = "http://127.0.0.1:8000/map-api/markerslist/";
     try {
         const response = await fetch(url);
         if (!response.ok) {
@@ -124,14 +125,10 @@
 
     //Add listener for the click
     /*
-    map.on('click', (event)=> {
+       map.on('dblclick', (event)=> {
         L.marker([event.latlng.lat , event.latlng.lng]).addTo(map);
     })
     */
-    
-    map.on('dblclick', (event)=> {
-        L.marker([event.latlng.lat , event.latlng.lng]).addTo(map);
-    })
 
     fetch('http://127.0.0.1:8000/map-api/markerslist') // api for the get request
     .then(response => response.json())
@@ -139,12 +136,15 @@
 
 
     var popup = L.popup();
+    var clickcoordinates = e.latlng
 
     function onMapClick(e) {
         popup
             .setLatLng(e.latlng)
             .setContent('<p>Submit a marker?</p><button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#markerModal"> test </button>')
             .openOn(map);
+
+        clickcoordinates = e.latlng
     }
 
     map.on('dblclick', onMapClick);
@@ -152,7 +152,6 @@
     var marker = L.marker([27.9, -81.7]).addTo(map);
     marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
 
-   
     var addmarker = L.marker();
     function addMarkerDrag(e){
         
