@@ -21,6 +21,7 @@ from rest_framework import routers, serializers, viewsets
 
 urlpatterns = [
     path('markers/', views.MarkersCreate.as_view(), name="marker-create-view"),
+    path('markers/manage/<int:pk>', views.MarkersRetrieveUpdateDestroy.as_view(), name="marker-update-view"),
     path('markerslist', views.markers_list),
     path('moderation/', views.moderation, name='moderation-panel'),
 ]

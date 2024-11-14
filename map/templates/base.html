@@ -123,12 +123,11 @@
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
-    //Add listener for the click
     /*
-       map.on('dblclick', (event)=> {
+    map.on('dblclick', (event)=> {
         L.marker([event.latlng.lat , event.latlng.lng]).addTo(map);
     })
-    */
+        */
 
     fetch('http://127.0.0.1:8000/map-api/markerslist') // api for the get request
     .then(response => response.json())
@@ -152,10 +151,23 @@
     var marker = L.marker([27.9, -81.7]).addTo(map);
     marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
 
+    /*
     var addmarker = L.marker();
     function addMarkerDrag(e){
         
     }
+    */
+
+    fetch('http://127.0.0.1:8000/map-api/markerslist')
+    .then(response => response.json())
+    .then(data => {
+        data.forEach(location => {
+            L.geoJSON(JSON.parse(location).geojson_data).addTo(map);
+        });
+        console.log('Working');
+        data.forEach((location) => console.log(element));
+    });
+
 
 </script>
 </html>

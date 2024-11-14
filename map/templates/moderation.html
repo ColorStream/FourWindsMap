@@ -14,6 +14,6 @@
 <body>
     {% for marker in data %}
         <h1>{{ marker.fromyear }}</h1>
-        <p>{{ marker.latitude }}, {{ marker.longitude }} <br> {{ marker.storytext }} </p>
+        <p>{{ marker.latitude }}, {{ marker.longitude }} <br> {{ marker.storytext }} <br> {{ marker.geojson_data }} </p>
     {% endfor %}
 </body>

@@ -25,6 +25,25 @@ class MarkersCreate(generics.ListCreateAPIView):
     serializer_class = MarkersSerializer
     permission_classes = [permissions.AllowAny]
 
+#so i can show in a list
+from rest_framework import mixins
+from rest_framework import generics
+
+class MarkersList(mixins.ListModelMixin,
+                  mixins.CreateModelMixin,
+                  generics.GenericAPIView):
+    queryset = Markers.objects.all()
+    serializer_class = MarkersSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
 class MarkersRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = Markers.objects.all()
     serializer_class = MarkersSerializer
@@ -34,7 +53,7 @@ class MarkersRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
 @csrf_exempt
 def markers_list(request):
     """
-    Reskin of the snippet example code. 
+    Reskin of the Markers example code. 
     """
     if request.method == 'GET':
         markers = Markers.objects.all()
