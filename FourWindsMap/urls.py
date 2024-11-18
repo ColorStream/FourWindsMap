@@ -21,7 +21,7 @@ import map.views as map_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', map_views.home, name='home'),
+    path('', map_views.Map.as_view(), name='map'),
     path('map-api/', include('map.urls')),
-    #path('api-auth/', include('rest_framework.urls')) #for a browsable API
+    path('api-auth/', include('rest_framework.urls')) #for a browsable API
 ]

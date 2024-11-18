@@ -1,21 +1,39 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Markers
-from django.http import HttpResponse, JsonResponse
-from rest_framework import generics, permissions, viewsets
-from .serializers import MarkersSerializer
+from django.http import JsonResponse
 import requests
-
 from django.views.decorators.csrf import csrf_exempt
+
+#Rest Framework Imports 
+from rest_framework import generics, permissions
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from .serializers import MarkersSerializer
+from rest_framework.views import APIView # for the map
 
 # Create your views here.
 
 #https://www.django-rest-framework.org/topics/html-and-forms/
+#@api_view(['GET', 'PUT'])
+class Map(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    permission_classes = [AllowAny]
+    template_name = 'base.html'
 
-def home(request):
-    
-    return render(request, 'base.html')
+    def get(self, request):
+        queryset = Markers.objects.all()
+        return Response({'markers': queryset})
+
+    def post(self, request):
+        serializer = MarkersSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response({'serializer': serializer}, template_name=self.template_name)
+        serializer.save()
+        return redirect('map')
+        #return Response({'serializer': serializer}, template_name=self.template_name)
 
 class MarkersCreate(generics.ListCreateAPIView):
     """

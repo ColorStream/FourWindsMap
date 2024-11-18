@@ -75,8 +75,12 @@
         </div>
         <div class="modal-body">
             <div class="mb-3">
+              <form id="marker-form" method="POST" action="{% url 'map' %}">
+                {% csrf_token %}
+                <input type="hidden" id="latitude" name="latitude">
+                <input type="hidden" id="longitude" name="longitude">
                 <label for="exampleFormControlInput1" class="form-label">Year</label>
-                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="1960 - Now">
+                <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="1960 - Now">
               </div>
               <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">Story</label>
@@ -86,6 +90,7 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           <button type="button" class="btn btn-primary">Save changes</button>
+          </form>
         </div>
       </div>
     </div>
@@ -134,29 +139,24 @@
     .then(data => console.log(data));
 
 
-    var popup = L.popup();
-    var clickcoordinates = e.latlng
+    //var popup = L.popup();
+    //var clickcoordinates = e.latlng
 
+    /*
     function onMapClick(e) {
+        let clickcoordinates = e.latlng
         popup
-            .setLatLng(e.latlng)
+            .setLatLng(clickcoordinates)
             .setContent('<p>Submit a marker?</p><button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#markerModal"> test </button>')
             .openOn(map);
 
-        clickcoordinates = e.latlng
     }
 
     map.on('dblclick', onMapClick);
+    */
 
     var marker = L.marker([27.9, -81.7]).addTo(map);
     marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
-
-    /*
-    var addmarker = L.marker();
-    function addMarkerDrag(e){
-        
-    }
-    */
 
     fetch('http://127.0.0.1:8000/map-api/markerslist')
     .then(response => response.json())
@@ -168,6 +168,26 @@
         data.forEach((location) => console.log(element));
     });
 
+     var marker;
+
+    // Listen for a click event on the map
+    map.on('click', function(e) {
+      var lat = e.latlng.lat;
+      var lng = e.latlng.lng;
+      
+      // If a marker already exists, remove it first
+      if (marker) {
+        map.removeLayer(marker);
+      }
+
+      // Add a marker at the clicked location
+      marker = L.marker([lat, lng]).addTo(map);
+
+      // Set the coordinates in the hidden form fields
+      document.getElementById('latitude').value = lat;
+      document.getElementById('longitude').value = lng;
+    });
+    
 
 </script>
 </html>
