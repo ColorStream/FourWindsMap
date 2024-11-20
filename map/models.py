@@ -15,6 +15,9 @@ class Markers(models.Model):
     def __str__(self):
         return f'{self.fromyear}: {self.storytext[:20]}'
     
+    #def geojson_update(self):
+            
+    
     class Meta:
         ordering = ['date_posted']
         # add a constraint here later, or maybe just do form validation

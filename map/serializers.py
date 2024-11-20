@@ -2,16 +2,16 @@ from rest_framework import serializers
 #from rest_framework_gis.serializers import GeoFeatureModelSerializer
 #from django.core.serializers import serialize
 from .models import Markers
+from datetime import datetime
 
 class MarkersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Markers
         latitude = serializers.FloatField(write_only=True)
         longitude = serializers.FloatField(write_only=True)
-        geojson_data = serializers.JSONField(write_only=True) 
-        #geo_field = 'point'
+        geojson_data = serializers.JSONField(read_only=True) 
         fields = ['latitude','longitude', 'fromyear', 'storytext', 'date_posted', 'geojson_data', 'approved']
-        read_only_fields = ['geojson_data'] #in order for it to be readonly and still visible, it HAS to be duplicated :(
+        read_only_fields = ['geojson_data', 'date_posted'] #in order for it to be readonly and still visible, it HAS to be duplicated :(
 
     def create(self, validated_data):
         # Construct GeoJSON from the latitude and longitude
@@ -24,9 +24,8 @@ class MarkersSerializer(serializers.ModelSerializer):
             "properties": {
                 "fromyear": validated_data.get('fromyear'),
                 "storytext": validated_data.get('storytext'),
-                "date_posted": validated_data.get('date_posted'),
-                # Add approved if needed
-                # "approved": validated_data.get('approved'),
+                #no date posted, since I think that's more relevant to moderation
+                "approved": validated_data.get('approved'),
             }
         }
 
