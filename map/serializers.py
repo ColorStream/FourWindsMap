@@ -58,7 +58,7 @@ class MarkersSerializer(serializers.ModelSerializer):
         marker = Markers.objects.create(**validated_data)
 
         # Debug print to verify GeoJSON construction (Optional)
-        print(f"GeoJSON data: {geojson_data}")
+        #print(f"GeoJSON data: {geojson_data}")
 
         return marker
     

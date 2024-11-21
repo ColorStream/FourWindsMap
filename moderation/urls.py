@@ -6,5 +6,4 @@ from . import views
 urlpatterns = [
     path('', include("django.contrib.auth.urls")),
     path('moderation/', views.ModerationPanel.as_view(), name='moderation-panel'),
-    path('markerupdate/<int:pk>/', views.markerupdate, name='markerupdate'),
 ]

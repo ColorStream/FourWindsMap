@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 #Rest Framework Imports 
 from rest_framework import generics, permissions, status, mixins
 from rest_framework.parsers import JSONParser
-from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -18,7 +18,7 @@ from rest_framework.views import APIView # for the map
 
 #https://www.django-rest-framework.org/topics/html-and-forms/
 class Map(APIView):
-    renderer_classes = [TemplateHTMLRenderer]
+    renderer_classes = [TemplateHTMLRenderer, JSONRenderer] #JSONRenderer processes post request
     permission_classes = [AllowAny]
     template_name = 'base.html'
     
@@ -26,29 +26,31 @@ class Map(APIView):
         queryset = Markers.objects.filter(approved=True)
         return Response({'markers': queryset})
 
+    
     def post(self, request):
         queryset = Markers.objects.all()
         if request.method == 'POST':
-            serializer = MarkersSerializer(data=request.POST)
+            serializer = MarkersSerializer(data=request.data)
+            #vserializer = VerificationSerializer(data=request.data) #TODO finish the double submittal with verification serializer
             if serializer.is_valid():
                 serializer.save()
-                return redirect('map')
+                return Response({"success": "Marker created successfully!"}, status=status.HTTP_201_CREATED)
             else:
-                serializer = MarkersSerializer()  # Initialize the serializer for GET requests
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return render(request, 'map.html', {'markers': queryset})
     
 
 class MarkersCreate(generics.ListCreateAPIView):
     """
-    API endpoint that allows markers to be viewed.
+    API endpoint that allows markers to be viewed and posted to by authenticated moderators.
     """
     queryset = Markers.objects.all() #.order_by('-date_posted')
     serializer_class = MarkersSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         serializer = MarkersSerializer(data=request.data)
-        vserializer = VerificationSerializer(data=request.data) #TODO finish the double submittal with verification serializer
+        #no verification serializer on this view assuming that you're authenticated as a moderator already
         
         if serializer.is_valid():
             serializer.save()
@@ -81,7 +83,7 @@ class MarkersRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView, mixins
 @csrf_exempt
 def markers_list(request):
     """
-    Reskin of the snippets example code. 
+    Handles JSON responses.
     """
     if request.method == 'GET':
         markers = Markers.objects.all()

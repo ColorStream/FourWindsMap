@@ -40,17 +40,16 @@
 </style>
 
 <body>
+  <!--
     <div id="toplayer">
         <button class="add-btn btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">+</button>
-    </div>
+    </div-->
     <div id="map">
         <div id="newMarker"></div>
     </div>
 
-   
-
     <!-- Bootstrap sidebar -->
-    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+    <!-- div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Offcanvas with body scrolling</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -59,13 +58,7 @@
         <div id="dragmarker"></div>
         <p>Try scrolling the rest of the page to see this option in action.</p>
     </div>
-    </div>
-
-    <!-- Button trigger modal 
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    Launch demo modal
-    </button>
-    -->
+    </div -->
   
   <!-- Modal -->
   <div class="modal fade" id="markerModal" tabindex="-1" aria-labelledby="markerModalLabel" aria-hidden="true">
@@ -141,7 +134,7 @@
 </body>
 <script>
   async function getData() {
-      const url = "http://127.0.0.1:8000/map-api/markerslist"; // API endpoint
+      const url = `{% url 'markerslist' %}`; // API endpoint
       try {
           const response = await fetch(url);
           if (!response.ok) {
@@ -164,8 +157,7 @@
                           if (feature.properties) {
                               layer.bindPopup(
                                   `<strong>${feature.properties.fromyear}</strong><br>
-                                  ${feature.properties.storytext}<br>
-                                  <strong>Approved: </strong>${feature.properties.approved}`
+                                  ${feature.properties.storytext}<br>`
                               );
                           }
                       }
@@ -258,7 +250,7 @@
         
         // Make the AJAX request using fetch API
         try {
-            const response = await fetch("{% url 'marker-create-view' %}", {
+            const response = await fetch(`{% url 'map' %}`, {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
