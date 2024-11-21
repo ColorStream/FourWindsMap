@@ -72,10 +72,10 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Add Marker</h1>
+          <h1 class="modal-title fs-5" id="markerModalTitle">Add Marker</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" id="markerModalBody">
             <div class="mb-3">
               <form id="marker-form" method="POST" enctype="multipart/form-data" action="{% url 'map' %}">
                 {% csrf_token %}
@@ -89,15 +89,50 @@
                 <label for="storytext" class="form-label">Story</label>
                 <textarea class="form-control" id="storytext" name="storytext" rows="3" placeholder="What was your experience at New College like? How did it change you?"></textarea>
               </div>
+              <!--VERIFICATION SECTION-->
+              <h4>
+                Verification Options 
+                <a label="What qualifies as an alumni?" onclick="defineAlum()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                    <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                  </svg>
+                </a>
+              </h4>
+              <p id="alum-def"></p>
+              <ul class="nav nav-underline" id="myTab">
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="#photo" onclick="showTab('#photo')" data-toggle="tab">Photo</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-toggle="tab" href="#questions" onclick="showTab('#questions')">Questionaire</a>
+                </li>
+              </ul>
+
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary" value="Save">Submit marker</button>
+          <button type="submit" class="btn btn-primary" id="markerModalSubmit" value="Save">Submit marker</button>
           </form>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div class="tab-pane active" type="button" id="photo" role="tabpanel" aria-labelledby="photo-tab" tabindex="0">...
+      <div class="mb-3">
+        <label for="formFile" class="form-label">Default file input example</label>
+        <input class="form-control" role="tab" type="file" id="formFile">
+      </div>      
+    </div>
+    <div class="tab-pane" type="button" id="questions" role="tabpanel" aria-labelledby="questions-tab" tabindex="0">...
+
+    </div>
+  </div>
+
 
     <!-- -->
 
@@ -156,8 +191,8 @@
     getData(); //fetch data 
 
     //default test markers
-    var defaultmark = L.marker([27.9, -81.7]).addTo(map);
-    defaultmark.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
+    //var defaultmark = L.marker([27.9, -81.7]).addTo(map);
+    //defaultmark.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
 
     var marker;
     var popup = L.popup();
@@ -183,6 +218,36 @@
       document.getElementById('longitude').value = lng;
       document.getElementById('coordformdisplay').innerText = coords.toString().slice(7, -1)
     });
+
+
+    function defineAlum()
+    {
+      infotext = document.getElementById('alum-def')
+      if (infotext.textContent == ''){
+        infotext.textContent = 'The New College Alumni association and Daimon define a alumni as people who have finished at least one term at New College of Florida. Please help my attempt to verify the markers submitted by you all!';
+      } else {
+        infotext.textContent = '';
+      }
+    }
+
+    /*
+    const triggerTabList = document.querySelectorAll('#myTab button')
+    triggerTabList.forEach(triggerEl => {
+      const tabTrigger = new bootstrap.Tab(triggerEl)
+
+      triggerEl.addEventListener('click', event => {
+        event.preventDefault()
+        tabTrigger.show()
+      })
+    })
+      */
+
+    function showTab(tabId) {
+      const tabTriggerEl = document.querySelector(`a[href="${tabId}"]`);
+      const tabTrigger = new bootstrap.Tab(tabTriggerEl);
+      bootstrap.Tab.getInstance(tabTriggerEl).show() 
+      tabTrigger.show();
+    }
     
     const form = document.getElementById('marker-form');
     form.addEventListener('submit', async function(e) {
@@ -207,11 +272,13 @@
                 //document.getElementById('success-message').style.display = 'block';
                 //document.getElementById('modal-body').setContent = 'block';
                 form.reset(); // Clear the form after success
+                document.getElementById('markerModalBody').setContent = '<p>Marker succesfully submitted. A moderator will review it soon!</p>';
+                document.getElementById('markerModalSubmit').setContent = '';
             } else {
                 const errorResult = await response.json();
                 console.error(errorResult);
                 //document.getElementById('error-message').style.display = 'block';
-                document.getElementById('modal-body').setContent = errorResult;
+                document.getElementById('markerModalBody').setContent = errorResult;
             }
         } catch (error) {
             console.error(error);

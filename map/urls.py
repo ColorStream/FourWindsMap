@@ -17,12 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
-from rest_framework import routers, serializers, viewsets
 
 urlpatterns = [
-    #path('', views.Map.as_view(), name='map'),
     path('markers/', views.MarkersCreate.as_view(), name="marker-create-view"),
     path('markers/manage/<int:pk>', views.MarkersRetrieveUpdateDestroy.as_view(), name="marker-update-view"),
-    path('markerslist', views.markers_list, name='markerslist'),
-    path('moderation/', views.moderation, name='moderation-panel'),
+    path('markerslist', views.markers_list, name='markerslist'), 
 ]
