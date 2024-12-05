@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.serializers import FileField
 from .models import Markers, Verification
 
 class MarkersListSerializer(serializers.ListSerializer): #this goes first in order to be initialized before the main serializer
@@ -77,6 +78,7 @@ class MarkersSerializer(serializers.ModelSerializer):
 class VerificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Verification
+        upload = FileField()
         fields = ['upload','a1', 'a2', 'a3']
         # in case... https://stackoverflow.com/questions/35522768/django-serializer-imagefield-to-get-full-url
 
