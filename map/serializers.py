@@ -63,6 +63,8 @@ class MarkersSerializer(serializers.ModelSerializer):
 
         return marker
     
+
+    
     def update(self, instance, validated_data): #works using the MarkersRetrieveUpdateDestroy Update Mixin
         # update the 'approved' field from validated_data, or keep the current value
         instance.approved = validated_data.get('approved', instance.approved)
@@ -74,13 +76,44 @@ class MarkersSerializer(serializers.ModelSerializer):
         # return marker object
         return instance
     
-
 class VerificationSerializer(serializers.ModelSerializer):
+    marker = serializers.PrimaryKeyRelatedField(queryset=Markers.objects.all())
+    
+    #marking all as required=False in order to make it so the custom validator works 
+    upload = serializers.FileField(max_length=50, allow_empty_file=False, required=False) #max_length caps filename
+    a1 = serializers.CharField(required=False)
+    a2 = serializers.CharField(required=False)
+    a3 = serializers.CharField(required=False)
+
     class Meta:
         model = Verification
-        upload = FileField()
-        fields = ['upload','a1', 'a2', 'a3']
-        # in case... https://stackoverflow.com/questions/35522768/django-serializer-imagefield-to-get-full-url
+        fields = ['upload', 'a1', 'a2', 'a3', 'marker']
+        read_only_fields = ['marker']
+    
+    def validate(self, data):
+        """
+        Validation to check whether the upload data is fulfilled OR the answer data is fulfilled.
+        """
+        upload = data.get('upload')
+        a1 = data.get('a1')
+        a2 = data.get('a2')
+        a3 = data.get('a3')
+
+        if upload and (a2 or a3): #Might remove
+            raise serializers.ValidationError(
+                "Provide either a file for or answers for the validation questions, but not both."
+            )
+
+        if not upload and not (a1 and a2 and a3): #this is to make sure someone has done at least one of the verification options
+            raise serializers.ValidationError(
+                "You must provide either a file in 'upload' or answers."
+            )
+
+        return data
+    
+    def create(self, validated_data):
+        return Verification.objects.create(**validated_data)
+
 
 
 

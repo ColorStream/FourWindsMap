@@ -25,8 +25,9 @@ class ModerationPanel(APIView): #TODO add some sort of indication it's been togg
     template_name = 'moderation.html'
     
     def get(self, request):
-        queryset = Markers.objects.all()
-        return Response({'markers': queryset})
+        markers = Markers.objects.all()
+        verification = Verification.objects.all()
+        return Response({'markers': markers, 'verification': verification})
 
     def post(self, request):
         queryset = Markers.objects.all()

@@ -30,11 +30,16 @@ class Map(APIView):
     def post(self, request):
         queryset = Markers.objects.all()
         if request.method == 'POST':
-            serializer = MarkersSerializer(data=request.data)
-            #vserializer = VerificationSerializer(data=request.data) #TODO finish the double submittal with verification serializer
+            requestdata = request.data
+            serializer = MarkersSerializer(data=requestdata)
             if serializer.is_valid():
-                serializer.save()
-                return Response({"success": "Marker created successfully!"}, status=status.HTTP_201_CREATED)
+                marker = serializer.save()
+                requestdata = requestdata.copy() #make request data mutable
+                requestdata['marker'] = marker.id 
+                verifserializer = VerificationSerializer(data=requestdata)
+                if verifserializer.is_valid():
+                    verifserializer.save()
+                    return Response({"success": "Marker created successfully!"}, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return render(request, 'map.html', {'markers': queryset})
