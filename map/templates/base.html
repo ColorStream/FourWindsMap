@@ -271,7 +271,7 @@
       // set the coordinates in the hidden form fields
       document.getElementById('latitude').value = lat;
       document.getElementById('longitude').value = lng;
-      document.getElementById('coordformdisplay').innerText = coords.toString().slice(7, -1)
+      document.getElementById('coordformdisplay').innerText = `Latitude: ${lat.toFixed(2)}, Longitude: ${lng.toFixed(2)}`;
     });
 
 
@@ -306,7 +306,7 @@
         }
 
         // Check file size
-        const maxSizeBytes = maxSizeMB * 1024 * 1024; // Convert MB to bytes
+        const maxSizeBytes = 1 * 1024 * 1024; // Convert MB to bytes
         if (file.size > maxSizeBytes) {
             alert("File size cannot exceed 1MB.");
             input.value = ''; // Clear the file input
@@ -344,16 +344,11 @@
 
             if (response.ok) {
                 const result = await response.json();
-                //document.getElementById('success-message').style.display = 'block';
-                //document.getElementById('modal-body').setContent = 'block';
-                form.reset(); // Clear the form after success
+                form.reset();
                 document.getElementById('markerModalClose').click();
-                //const dismissButton = document.querySelector('[data-bs-dismiss="modal"]'); // TODO: Or any other element with data-bs-dismiss
             } else {
                 const errorResult = await response.json();
                 console.error(errorResult);
-                //document.getElementById('error-message').style.display = 'block';
-                //document.getElementById('markerModalBody').setContent = errorResult;
             }
         } catch (error) {
             console.error(error);

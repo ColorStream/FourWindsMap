@@ -1,9 +1,26 @@
 #from django.contrib.gis.db import models
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.db.models import UniqueConstraint
 
 # Create your models here.
 
+class Verification(models.Model):
+    upload = models.ImageField(null=True) #requires pillow
+    a1 = models.CharField(null=True, max_length=250) #a is short for answers
+    a2 = models.CharField(null=True, max_length=250)
+    a3 = models.CharField(null=True, max_length=250)
+
+    def clean(self): #In case it somehow slips through the cracks...
+        cleaned_data = super().clean()
+        upload = cleaned_data.get("upload")
+        answers = [cleaned_data.get("a1"), cleaned_data.get("a2"), cleaned_data.get("a3")]
+        if upload == None and None in answers:
+            raise ValidationError("You must validate with either an upload or questionnaire answers!")
+        
+    def __str__(self):
+        return f'{self.a1}, {self.a2}, {self.a2}'
+    
 class Markers(models.Model):
     latitude = models.FloatField(null=False)
     longitude = models.FloatField(null=False)
@@ -12,6 +29,8 @@ class Markers(models.Model):
     storytext = models.CharField(max_length=350, null=False)
     date_posted = models.DateTimeField(auto_now_add=True)
     approved = models.BooleanField(default=False) #TODO when moderation panel finished, include geojson update for approval
+    verification = models.OneToOneField(Verification, on_delete=models.CASCADE, null=True, blank=True)
+
 
     def __str__(self):
         return f'{self.fromyear}: {self.storytext[:20]}'
@@ -22,27 +41,7 @@ class Markers(models.Model):
         elif self.approved == False or None:
             self.geojson_data['approved'] = False
         return self.save()
-            
     
     class Meta:
-        ordering = ['date_posted']
-        # add a constraint here later, or maybe just do form validation
-        #unique_together= ['latitude, longitude, storytext']
-
-class Verification(models.Model):
-    upload = models.ImageField(null=True) #INSTALL PILLOW
-    a1 = models.CharField(null=True, max_length=250) #a is short for answers
-    a2 = models.CharField(null=True, max_length=250)
-    a3 = models.CharField(null=True, max_length=250)
-
-    marker = models.ForeignKey("Markers", on_delete=models.CASCADE)
-
-    def clean(self): #In case it somehow slips through the cracks...
-        cleaned_data = super().clean()
-        upload = cleaned_data.get("upload")
-        answers = [cleaned_data.get("a1"), cleaned_data.get("a2"), cleaned_data.get("a3")]
-        if upload == None and None in answers:
-            raise ValidationError("You must validate with either an upload or questionnaire answers!")
-        
-    def __str__(self):
-        return f'{self.marker}'
+        ordering = ['-date_posted']
+        constraints = [UniqueConstraint(fields=['fromyear', 'storytext'], name='unique_story')]

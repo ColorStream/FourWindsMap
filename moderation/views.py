@@ -25,8 +25,10 @@ class ModerationPanel(APIView): #TODO add some sort of indication it's been togg
     template_name = 'moderation.html'
     
     def get(self, request):
-        markers = Markers.objects.all()
+        markers = Markers.objects.all().order_by('-date_posted')
         verification = Verification.objects.all()
+        for marker in markers:
+            print(marker.verification)
         return Response({'markers': markers, 'verification': verification})
 
     def post(self, request):
@@ -47,6 +49,11 @@ class ModerationPanel(APIView): #TODO add some sort of indication it's been togg
             serializer.update()
             return redirect('moderation-panel')
         return render(request, 'moderation.html', {'markers': Markers.objects.all()})
+    
+    def delete(self, request, pk):
+        instance = self.get_object(pk)
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
    
 

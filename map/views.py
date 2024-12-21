@@ -26,23 +26,23 @@ class Map(APIView):
         queryset = Markers.objects.filter(approved=True)
         return Response({'markers': queryset})
 
-    
     def post(self, request):
         queryset = Markers.objects.all()
         if request.method == 'POST':
             requestdata = request.data
-            serializer = MarkersSerializer(data=requestdata)
-            if serializer.is_valid():
-                marker = serializer.save()
-                requestdata = requestdata.copy() #make request data mutable
-                requestdata['marker'] = marker.id 
-                verifserializer = VerificationSerializer(data=requestdata)
-                if verifserializer.is_valid():
-                    verifserializer.save()
+            verifserializer = VerificationSerializer(data=requestdata)
+            if verifserializer.is_valid():
+                verification = verifserializer.save()
+                markerserializer = MarkersSerializer(data=requestdata)
+                if markerserializer.is_valid():
+                    marker = markerserializer.save()
+                    marker.verification = verification #have to add it after model creation because it won't pass in validated data
+                    marker.save()
                     return Response({"success": "Marker created successfully!"}, status=status.HTTP_201_CREATED)
             else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response(verifserializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return render(request, 'map.html', {'markers': queryset})
+
     
 
 class MarkersCreate(generics.ListCreateAPIView):

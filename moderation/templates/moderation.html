@@ -13,28 +13,19 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <style>
-    .banner {
-        position: fixed;
-        background-color: rgb(72, 199, 55);
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        padding: 8px;
-        width: 100vw;
-        font-weight: 700;
-        z-index: 999;
-        color: rgb(255, 255, 255);
-        text-decoration: none;
-        display: flex;
-        animation: fadein 1s;
-        min-height: 34px;
-        display: none;
+    .notifications-section .alert {
+    display: none; /* Hidden by default */
+    width: 100%;
+    margin-bottom: 15px;
+    }
+
+    .alert .close {
+        position: absolute;
+        right: 10px;
+        top: 10px;
     }
 </style>
 <body>
-    <a class="banner" id="status-banner" data-test-label="banner" text-variation="default">
-        <p id="banner-text">Marker updated</p>
-    </a>
 
   {% for marker in markers %}
     <!-- Delete Marker Modal -->
@@ -62,131 +53,190 @@
     </div>
   {% endfor %}
 
-    <p>Currently viewing as {{request.user}}</p>
+    <!-- User Nav Heading -->
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1">Currently viewing as {{request.user}}</span>
+        <form class="container-fluid justify-content-start">
+        </form>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="notifications-section">
+            <div class="alert alert-success" id="alert-succes">
+                <strong class="default"><i class="fa fa-road"></i> Well done,</strong> You have finished job!
+                <button type="button" class="btn close" data-dismiss="alert" aria-hidden="true">×</button>
+            </div>
+            <div class="alert alert-danger" id="alert-danger">
+                <strong class="default"><i class="fa fa-hdd-o"></i> Server </strong> reported problems.
+                <button type="button" class="btn close" data-dismiss="alert" aria-hidden="true">×</button>
+            </div>
+            <div class="alert alert-info nomargin" id="alert-info">
+                <strong class="default"><i class="fa fa-money"></i> Received </strong> $1826 from client.
+                <button type="button" class="btn close" data-dismiss="alert" aria-hidden="true">×</button>
+            </div>
+        </div>
+    </div>
+    
+
+    {% if markers %}
     <div class="row row-cols-1 row-cols-md-3 g-4 m-2">
         {% for marker in markers %}
         <div class="col">
             <div class="card mb-3" id="card-{{ marker.id }}"style="max-width: 540px;" data-marker-id="{{ marker.id }}">
-                <div class="row g-0">
-                <!--div class="col-md-4"> map preview here eventually?
-                    <img src="..." class="img-fluid rounded-start" alt="..."> 
-                </div-->
-                <div class="col-md-8">
-                    <div class="card-body">
-                    <h5 class="card-title">{{ marker.fromyear }}</h5>
-                    <p class="card-text"><small class="text-secondary">{{ marker.latitude }}, {{ marker.longitude }}</small></p>
-                    <p class="card-text">{{ marker.storytext }}</p>
-                    <p class="card-text" id="marker-status"></p>
-                    <p class="card-text"><small class="text-body-secondary">{{ marker.date_posted }}</small></p>
-                        
-                    <!-- Approve/Unapprove Form -->
-                    <div class="form-check">
-                        <input 
-                            class="form-check-input" 
-                            type="checkbox" 
-                            id="flexCheckDefault-{{ marker.id }}" 
-                            {% if marker.approved %} checked {% endif %}
-                            onchange="toggleApproval(`{{ marker.id }}`, this.checked)" 
-                        >
-                        <label class="form-check-label" for="flexCheckDefault-{{ marker.id }}">
-                            Approved
-                        </label>
+                <nav>
+                    <div class="nav nav-tabs mt-3 mx-2" id="nav-tab" role="tablist">
+                      <button class="nav-link active" id="nav-marker-tab" data-bs-toggle="tab" data-bs-target="#nav-marker-{{marker.id}}" type="button" role="tab" aria-controls="nav-marker" aria-selected="true">Marker</button>
+                      <button class="nav-link" id="nav-verif-tab" data-bs-toggle="tab" data-bs-target="#nav-verif-{{marker.id}}" type="button" role="tab" aria-controls="nav-verif" aria-selected="false">Verification</button>
                     </div>
-
-                    <!-- Delete Marker Modal Trigger -->
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#{{ marker.id }}-deleteModal">
-                        Delete
-                    </button>
-                </div>
-                </div>
-                </div>
+                  </nav>
+                  <div class="tab-content mx-2" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-marker-{{ marker.id }}" role="tabpanel" aria-labelledby="nav-marker-tab" tabindex="0">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ marker.fromyear }}</h5>
+                            <p class="card-text"><small class="text-secondary">{{ marker.latitude }}, {{ marker.longitude }}</small></p>
+                            <p class="card-text">{{ marker.storytext }}</p>
+                            <p class="card-text" id="marker-status"></p>
+                            <p class="card-text"><small class="text-body-secondary">{{ marker.date_posted }}</small></p>
+                                
+                            <!-- Approve/Unapprove Form -->
+                            <div class="form-check">
+                                <input 
+                                    class="form-check-input" 
+                                    type="checkbox" 
+                                    id="flexCheckDefault-{{ marker.id }}" 
+                                    {% if marker.approved %} checked {% endif %}
+                                    onchange="toggleApproval(`{{ marker.id }}`, this.checked)" 
+                                >
+                                <label class="form-check-label" for="flexCheckDefault-{{ marker.id }}">
+                                    Approved
+                                </label>
+                            </div>
+                            <!-- Delete Marker Modal Trigger -->
+                            <button type="button" class="btn btn-danger mt-3" data-bs-toggle="modal" data-bs-target="#{{ marker.id }}-deleteModal">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-verif-{{marker.id}}" role="tabpanel" aria-labelledby="nav-verif-tab" tabindex="0">
+                        <div class="card-body">
+                            {% if marker.verification %}
+                            <h5>Verification Details</h5>
+                            <p><strong>File Upload:</strong> <a href="{{ verification.upload.url }}" target="_blank">{{ marker.upload.name }}</a></p>
+                            <p><strong>Question 1:</strong> {{ marker.verification.a1 }}</p>
+                            <p><strong>Question 2:</strong> {{ marker.verification.a2 }}</p>
+                            <p><strong>Question 3:</strong> {{ marker.verification.a3 }}</p>
+                            {% else %}
+                                <p>No verification available for this marker.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                  </div>              
             </div>
         </div> 
+
         <script>
+            console.log(`{{ marker }}:{{ marker.verification }}`);
             // Utility function to get CSRF token from cookies
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== "") {
-            const cookies = document.cookie.split(";");
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === name + "=") {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== "") {
+                    const cookies = document.cookie.split(";");
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === name + "=") {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            // toggles approval
+            async function toggleApproval(markerId, isApproved) {
+                const csrfToken = getCookie("csrftoken");
+                const url = `{% url 'marker-update-view' marker.id %}`; // API endpoint for this specific marker
+                let statusbanner = document.getElementById('status-banner');
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok!');
+                    }
+
+                    const json = await response.json();
+                    json.approved = isApproved
+                    json.geojson_data.properties.approved = isApproved
+
+                    await fetch(url, {
+                        method: "PATCH",
+                        headers: {
+                            "X-CSRFToken": csrfToken,
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(json),
+                    });
+                    console.log(json);
+                    console.log(`Marker ${markerId}: [{{ marker }}] marked as ${isApproved}.`)
+                    document.getElementById("alert-success").style.display = "block";
+                    setTimeout(() => {
+                        document.getElementById("alert-success").style.display = "";
+                    }, 3000); // 5000 milliseconds = 5 seconds
+                } catch (error) {
+                    console.error("Error retrieving data:", error);
+                }
+                
+            
+            }
+
+            // Function to handle deleting a marker
+            async function deleteMarker(markerId) {
+                const csrfToken = getCookie("csrftoken");
+
+                try {
+                    const response = await fetch(`{% url 'marker-update-view' marker.id %}`, {
+                        method: "DELETE",
+                        headers: {
+                            "X-CSRFToken": csrfToken,
+                        },
+                    });
+
+                    if (response.ok) {
+                        console.log(`Marker ${markerId} deleted`);
+                        const markerCard = document.getElementById(`card-${markerId}`);
+                        if (markerCard) markerCard.remove();
+                    } else {
+                        console.error(`Failed to delete marker ${markerId}`);
+                    }
+                } catch (error) {
+                    console.error("An error occurred while deleting the marker:", error);
                 }
             }
-        }
-        return cookieValue;
-    }
-
-    // toggles approval
-    async function toggleApproval(markerId, isApproved) {
-        const csrfToken = getCookie("csrftoken");
-        const url = `{% url 'marker-update-view' marker.id %}`; // API endpoint
-        let statusbanner = document.getElementById('status-banner');
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error('Network response was not ok!');
-            }
-
-            const json = await response.json();
-            json.approved = isApproved
-            json.geojson_data.properties.approved = isApproved
-
-            await fetch(url, {
-                method: "PATCH",
-                headers: {
-                    "X-CSRFToken": csrfToken,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(json),
-            });
-            console.log(`Marker ${markerId} marked as ${isApproved}.`)
-            statusbanner.style.display = 'block';
-            setTimeout(() => {
-                statusbanner.style.display = 'none';
-            }, 3000); // 5000 milliseconds = 5 seconds
-        } catch (error) {
-            console.error("Error retrieving data:", error);
-        }
-          
-       
-    }
-
-    // Function to handle deleting a marker
-    async function deleteMarker(markerId) {
-        const csrfToken = getCookie("csrftoken");
-
-        try {
-            const response = await fetch(`{% url 'marker-update-view' marker.id %}`, {
-                method: "DELETE",
-                headers: {
-                    "X-CSRFToken": csrfToken,
-                },
-            });
-
-            if (response.ok) {
-                console.log(`Marker ${markerId} deleted`);
-                const markerCard = document.getElementById(`card-${markerId}`);
-                if (markerCard) markerCard.remove();
-            } else {
-                console.error(`Failed to delete marker ${markerId}`);
-            }
-        } catch (error) {
-            console.error("An error occurred while deleting the marker:", error);
-        }
-    }
         </script>
         {% endfor %}
     </div>
 
     <script>
-        function stBannerUpdate(status) {
-            //make this toggle later
-        }
+        document.addEventListener('DOMContentLoaded', function () {
+            // Select all checkboxes with class "form-check-input"
+            const checkboxes = document.querySelectorAll('.form-check-input');
+
+            checkboxes.forEach(function (checkbox) {
+                // Add event listener to each checkbox
+                checkbox.addEventListener('change', function (event) {
+                    const markerId = event.target.id.replace('flexCheckDefault-', ''); // Extract marker ID from checkbox ID
+                    const isApproved = event.target.checked; // Get whether it's checked or not
+
+                    // Call toggleApproval with the markerId and approval state
+                    toggleApproval(markerId, isApproved);
+                });
+            });
+        });
     </script>
-   
+    {% else %}
+        <p class="text-center m-4">No markers at the moment.</p>
+    {% endif %}
     
 
    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
