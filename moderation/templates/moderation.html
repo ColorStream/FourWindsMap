@@ -62,23 +62,7 @@
         </div>
     </nav>
 
-    <div class="container-fluid">
-        <div class="notifications-section">
-            <div class="alert alert-success" id="alert-succes">
-                <strong class="default"><i class="fa fa-road"></i> Well done,</strong> You have finished job!
-                <button type="button" class="btn close" data-dismiss="alert" aria-hidden="true">×</button>
-            </div>
-            <div class="alert alert-danger" id="alert-danger">
-                <strong class="default"><i class="fa fa-hdd-o"></i> Server </strong> reported problems.
-                <button type="button" class="btn close" data-dismiss="alert" aria-hidden="true">×</button>
-            </div>
-            <div class="alert alert-info nomargin" id="alert-info">
-                <strong class="default"><i class="fa fa-money"></i> Received </strong> $1826 from client.
-                <button type="button" class="btn close" data-dismiss="alert" aria-hidden="true">×</button>
-            </div>
-        </div>
-    </div>
-    
+    <div id="liveAlertPlaceholder"></div>
 
     {% if markers %}
     <div class="row row-cols-1 row-cols-md-3 g-4 m-2">
@@ -106,8 +90,8 @@
                                     class="form-check-input" 
                                     type="checkbox" 
                                     id="flexCheckDefault-{{ marker.id }}" 
+                                    name="{% url 'marker-update-view' marker.id %}"
                                     {% if marker.approved %} checked {% endif %}
-                                    onchange="toggleApproval(`{{ marker.id }}`, this.checked)" 
                                 >
                                 <label class="form-check-label" for="flexCheckDefault-{{ marker.id }}">
                                     Approved
@@ -135,89 +119,40 @@
                   </div>              
             </div>
         </div> 
-
-        <script>
-            console.log(`{{ marker }}:{{ marker.verification }}`);
-            // Utility function to get CSRF token from cookies
-            function getCookie(name) {
-                let cookieValue = null;
-                if (document.cookie && document.cookie !== "") {
-                    const cookies = document.cookie.split(";");
-                    for (let i = 0; i < cookies.length; i++) {
-                        const cookie = cookies[i].trim();
-                        if (cookie.substring(0, name.length + 1) === name + "=") {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
-
-            // toggles approval
-            async function toggleApproval(markerId, isApproved) {
-                const csrfToken = getCookie("csrftoken");
-                const url = `{% url 'marker-update-view' marker.id %}`; // API endpoint for this specific marker
-                let statusbanner = document.getElementById('status-banner');
-                try {
-                    const response = await fetch(url);
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok!');
-                    }
-
-                    const json = await response.json();
-                    json.approved = isApproved
-                    json.geojson_data.properties.approved = isApproved
-
-                    await fetch(url, {
-                        method: "PATCH",
-                        headers: {
-                            "X-CSRFToken": csrfToken,
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(json),
-                    });
-                    console.log(json);
-                    console.log(`Marker ${markerId}: [{{ marker }}] marked as ${isApproved}.`)
-                    document.getElementById("alert-success").style.display = "block";
-                    setTimeout(() => {
-                        document.getElementById("alert-success").style.display = "";
-                    }, 3000); // 5000 milliseconds = 5 seconds
-                } catch (error) {
-                    console.error("Error retrieving data:", error);
-                }
-                
-            
-            }
-
-            // Function to handle deleting a marker
-            async function deleteMarker(markerId) {
-                const csrfToken = getCookie("csrftoken");
-
-                try {
-                    const response = await fetch(`{% url 'marker-update-view' marker.id %}`, {
-                        method: "DELETE",
-                        headers: {
-                            "X-CSRFToken": csrfToken,
-                        },
-                    });
-
-                    if (response.ok) {
-                        console.log(`Marker ${markerId} deleted`);
-                        const markerCard = document.getElementById(`card-${markerId}`);
-                        if (markerCard) markerCard.remove();
-                    } else {
-                        console.error(`Failed to delete marker ${markerId}`);
-                    }
-                } catch (error) {
-                    console.error("An error occurred while deleting the marker:", error);
-                }
-            }
-        </script>
         {% endfor %}
     </div>
 
     <script>
+        // Utility function to get CSRF token from cookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                const cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === name + "=") {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // default bootstrap function
+        const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
+        const appendAlert = (message, type) => {
+        const wrapper = document.createElement('div')
+        wrapper.innerHTML = [
+            `<div class="alert alert-${type} alert-dismissible m-2" role="alert">`,
+            `   <div>${message}</div>`,
+            '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+            '</div>'
+        ].join('')
+
+        alertPlaceholder.append(wrapper)
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             // Select all checkboxes with class "form-check-input"
             const checkboxes = document.querySelectorAll('.form-check-input');
@@ -227,13 +162,69 @@
                 checkbox.addEventListener('change', function (event) {
                     const markerId = event.target.id.replace('flexCheckDefault-', ''); // Extract marker ID from checkbox ID
                     const isApproved = event.target.checked; // Get whether it's checked or not
+                    const url = event.target.name
+                    console.log(markerId, isApproved, url);
 
                     // Call toggleApproval with the markerId and approval state
-                    toggleApproval(markerId, isApproved);
+                    toggleApproval(markerId, isApproved, url);
                 });
             });
         });
+
+        // toggles approval
+        async function toggleApproval(markerId, isApproved, url) {
+            const csrfToken = getCookie("csrftoken");
+            try {
+                const response = await fetch(url);  // Use the URL passed into the function
+                if (!response.ok) {
+                    throw new Error('Network response was not ok!');
+                }
+    
+                const json = await response.json();
+                json.approved = isApproved;
+                json.geojson_data.properties.approved = isApproved;
+    
+                await fetch(url, {
+                    method: "PATCH",
+                    headers: {
+                        "X-CSRFToken": csrfToken,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(json),
+                });
+                console.log(`Marker visibility successfully marked as ${isApproved}.`);
+                appendAlert('Marker status changed.', 'success');
+            } catch (error) {
+                appendAlert('Marker status failed to change.', 'danger');
+                console.error("Error retrieving data:", error);
+            }
+        }
+    
+        // Function to handle deleting a marker
+        async function deleteMarker(markerId, url) {
+            const csrfToken = getCookie("csrftoken");
+    
+            try {
+                const response = await fetch(url, {
+                    method: "DELETE",
+                    headers: {
+                        "X-CSRFToken": csrfToken,
+                    },
+                });
+    
+                if (response.ok) {
+                    console.log(`Marker ${markerId} deleted`);
+                    const markerCard = document.getElementById(`card-${markerId}`);
+                    if (markerCard) markerCard.remove();
+                } else {
+                    console.error(`Failed to delete marker ${markerId}`);
+                }
+            } catch (error) {
+                console.error("An error occurred while deleting the marker:", error);
+            }
+        }
     </script>
+    
     {% else %}
         <p class="text-center m-4">No markers at the moment.</p>
     {% endif %}
