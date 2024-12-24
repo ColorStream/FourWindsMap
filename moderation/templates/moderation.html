@@ -41,10 +41,10 @@
             </div>
             <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abort</button>
-            <form id="delete-marker-{{ marker.id }}" data-bs-dismiss="modal" onsubmit="deleteMarker(`{{ marker.id }}`); return false;">
+            <form id="delete-marker-{{ marker.id }}" data-bs-dismiss="modal" action="{% url 'marker-update-view' marker.id %}">
                 {% csrf_token %}
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button type="submit" class="btn btn-danger">Confirm Deletion</button>
+                    <button type="submit" class="btn btn-danger delete-confirm">Confirm Deletion</button>
                 </div>
             </form>
             </div>
@@ -154,19 +154,31 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            // Select all checkboxes with class "form-check-input"
+            // checkbox listeners
             const checkboxes = document.querySelectorAll('.form-check-input');
 
             checkboxes.forEach(function (checkbox) {
-                // Add event listener to each checkbox
                 checkbox.addEventListener('change', function (event) {
-                    const markerId = event.target.id.replace('flexCheckDefault-', ''); // Extract marker ID from checkbox ID
-                    const isApproved = event.target.checked; // Get whether it's checked or not
+                    const markerId = event.target.id.replace('flexCheckDefault-', ''); // extract marker ID from checkbox ID
+                    const isApproved = event.target.checked; // checkbox state
                     const url = event.target.name
-                    console.log(markerId, isApproved, url);
 
-                    // Call toggleApproval with the markerId and approval state
                     toggleApproval(markerId, isApproved, url);
+                });
+            });
+
+            //delete listeners
+            const deleteButtons = document.querySelectorAll('.delete-confirm');
+
+            deleteButtons.forEach(function(button) {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault(); // prevent the default form submission (reload)
+
+                    const form = button.closest('form'); 
+                    const markerId = form.id.replace('delete-marker-', ''); // extract marker ID
+                    const url = form.action; 
+
+                    deleteMarker(markerId, url);
                 });
             });
         });
@@ -175,7 +187,7 @@
         async function toggleApproval(markerId, isApproved, url) {
             const csrfToken = getCookie("csrftoken");
             try {
-                const response = await fetch(url);  // Use the URL passed into the function
+                const response = await fetch(url);  // use the URL passed into the function
                 if (!response.ok) {
                     throw new Error('Network response was not ok!');
                 }
@@ -213,11 +225,12 @@
                 });
     
                 if (response.ok) {
-                    console.log(`Marker ${markerId} deleted`);
+                    console.log(`Marker ${markerId} deleted!`);
+                    appendAlert('Marker deleted.', 'success');
                     const markerCard = document.getElementById(`card-${markerId}`);
                     if (markerCard) markerCard.remove();
                 } else {
-                    console.error(`Failed to delete marker ${markerId}`);
+                    console.error(`Failed to delete marker ${markerId}.`);
                 }
             } catch (error) {
                 console.error("An error occurred while deleting the marker:", error);

@@ -24,18 +24,20 @@ class Verification(models.Model):
 class Markers(models.Model):
     latitude = models.FloatField(null=False)
     longitude = models.FloatField(null=False)
-    fromyear = models.SmallIntegerField(null=True) #TODO be sure to have form validation (must be > 1950 || )
+    fromyear = models.SmallIntegerField(null=True)
     geojson_data = models.JSONField(default=list, null=False)
     storytext = models.CharField(max_length=350, null=False)
     date_posted = models.DateTimeField(auto_now_add=True)
-    approved = models.BooleanField(default=False) #TODO when moderation panel finished, include geojson update for approval
-    verification = models.OneToOneField(Verification, on_delete=models.CASCADE, null=True, blank=True)
+    approved = models.BooleanField(default=False)
+
+    #Accompanying verification model - sets NULL when verification model is deleted
+    verification = models.OneToOneField(Verification, on_delete=models.SET_NULL, null=True, blank=True)
 
 
     def __str__(self):
         return f'{self.fromyear}: {self.storytext[:20]}'
     
-    def geojson_update(self): #make sure this is right later; should only be used by admin
+    def geojson_update(self): #should be updated through serializer, but in case
         if self.approved == True:
             self.geojson_data['approved'] = True
         elif self.approved == False or None:
@@ -43,5 +45,5 @@ class Markers(models.Model):
         return self.save()
     
     class Meta:
-        ordering = ['-date_posted']
-        constraints = [UniqueConstraint(fields=['fromyear', 'storytext'], name='unique_story')]
+        ordering = ['-date_posted'] #order by most recent
+        constraints = [UniqueConstraint(fields=['fromyear', 'storytext'], name='unique_story')] #prevent duplicate fromyear and storytext

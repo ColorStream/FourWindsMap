@@ -26,10 +26,7 @@ class ModerationPanel(APIView): #TODO add some sort of indication it's been togg
     
     def get(self, request):
         markers = Markers.objects.all().order_by('-date_posted')
-        verification = Verification.objects.all()
-        for marker in markers:
-            print(marker.verification)
-        return Response({'markers': markers, 'verification': verification})
+        return Response({'markers': markers})
 
     def post(self, request):
         queryset = Markers.objects.all()

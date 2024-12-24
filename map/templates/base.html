@@ -70,17 +70,44 @@
             <!-- Tabs for Information in the Disclaimer Modal-->
             <div class="d-flex align-items-start">
               <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</button>
-                <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Profile</button>
-                <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Messages</button>
+                <button class="nav-link active" id="v-pills-info-tab" data-bs-toggle="pill" data-bs-target="#v-pills-info" type="button" role="tab" aria-controls="v-pills-info" aria-selected="true">Info</button>
+                <button class="nav-link" id="v-pills-guide-tab" data-bs-toggle="pill" data-bs-target="#v-pills-guide" type="button" role="tab" aria-controls="v-pills-guide" aria-selected="false">Guide</button>
+                <button class="nav-link" id="v-pills-contact-tab" data-bs-toggle="pill" data-bs-target="#v-pills-contact" type="button" role="tab" aria-controls="v-pills-contact" aria-selected="false">Contact</button>
                 <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</button>
               </div>
               <div class="tab-content" id="v-pills-tabContent">
-                <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab" tabindex="0">...
-                  Welcome to the Four Winds Map thesis project!
+                <div class="tab-pane fade show active" id="v-pills-info" role="tabpanel" aria-labelledby="v-pills-info-tab" tabindex="0">
+                  Welcome to the 4Winds Map! 
+                  
+                  <p> This map was made as a part of my thesis project. I wanted to
+                   make a collaborative mapping application that could allow alumni to post where they are now, 
+                   when they graduated (if they so desired), and how New College shaped where they are now or 
+                   what kind of importance New College holds to them now. </p>
+                  <p> As a part of this project, you will be able to post a marker  without creating an account,
+                   but I do require some sort of verification information to prove that you were a New College 
+                   alumni. Whatever verification info you submit will not be shared. If you would like your 
+                   marker removed or verification information deleted after approval, please contact me at the
+                    information on the Contact tab. </p> 
+                  
+                  <p>Every entry on this page is moderated and will take a 
+                    while to be posted. Please do not spam entries. <br> </p>
+                  
+                  <p>
+                    Entries containing the following will not be approved: <br>
+                    - Advertising <br>
+                    - Personal information (identifying information such as addresses, etc) <br>
+                    - Hate speech <br>
+                    - Overly graphic subject matter <br>
+                    - Solely political messaging <br>
+                  </p>
+
+                  <p>Your entries will not be used for any commercial means, but please be conscious that this 
+                  is a public website, and others will be able to see what you submit. <br> Navigate to the Guide 
+                  tab for a full list of features and information on how to use this site. <br> By clicking 'I understand', 
+                  you agree you've read and understand these rules. </p>
                 </div>
-                <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0">...</div>
-                <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab" tabindex="0">...</div>
+                <div class="tab-pane fade" id="v-pills-guide" role="tabpanel" aria-labelledby="v-pills-guide-tab" tabindex="0">...</div>
+                <div class="tab-pane fade" id="v-pills-contact" role="tabpanel" aria-labelledby="v-pills-contact-tab" tabindex="0">...</div>
                 <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab" tabindex="0">...</div>
               </div>
             </div>
@@ -179,21 +206,13 @@
 </body>
 <script>
 
- //localStorage.setItem('modalShown', 'false');
  document.addEventListener("DOMContentLoaded", function () {
       const dbutton = document.getElementById("disclaimerButton"); 
-      //const modalElement = document.getElementById('disclaimerModal');
-      //const modal = new bootstrap.Modal(modalElement);
-      //console.log(modalElement); console.log(modal);
-      dbutton.click();
 
       if (!localStorage.getItem('modalShown')) {
-        dbutton.click();
-
-        // Set localStorage so it won't show again
-        localStorage.setItem('modalShown', 'false');
+        dbutton.click(); 
+        //localStorage.setItem('modalShown', 'true'); // set localStorage so it won't show again
       }
-      console.log('The modal is being recognized?');
     });
 
   async function getData() {

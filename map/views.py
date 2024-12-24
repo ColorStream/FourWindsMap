@@ -82,8 +82,13 @@ class MarkersRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView, mixins
         return self.update(request, *args, **kwargs)
     
     def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-
+        try:
+            marker = self.get_object()
+            if marker.verification:
+                marker.verification.delete()
+            return self.destroy(request, *args, **kwargs)
+        except Exception as e:
+            return Response({'Error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 @csrf_exempt
 def markers_list(request):
