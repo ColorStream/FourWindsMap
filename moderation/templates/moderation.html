@@ -57,8 +57,12 @@
     <nav class="navbar bg-body-tertiary">
         <div class="container-fluid">
         <span class="navbar-brand mb-0 h1">Currently viewing as {{request.user}}</span>
-        <form class="container-fluid justify-content-start">
-        </form>
+            <div class="d-flex">
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-danger" type="submit">Log Out</button>
+                </form>
+            </div>
         </div>
     </nav>
 

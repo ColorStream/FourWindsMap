@@ -19,7 +19,7 @@ class Verification(models.Model):
             raise ValidationError("You must validate with either an upload or questionnaire answers!")
         
     def __str__(self):
-        return f'{self.a1}, {self.a2}, {self.a2}'
+        return f'{self.upload}; {self.a1}, {self.a2}, {self.a2}'
     
 class Markers(models.Model):
     latitude = models.FloatField(null=False)

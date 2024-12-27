@@ -2,4 +2,5 @@
 <form method="post">{% csrf_token %}
 {{ form.as_p }}
 <button type="submit">Log In</button>
+<p> This page is for moderators only. Lost? <a href="{% url 'map' %}">Click here to make it back to the map.</a></p>
 </form>
