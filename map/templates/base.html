@@ -279,16 +279,22 @@
     zoom: 7
     });
 
+    //check https://github.com/leaflet-extras/leaflet-providers
+    var Esri_WorldTopoMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
+    });
+
+    Esri_WorldTopoMap.addTo(map);
+
+
+    /*
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
+    */
 
     getData(); //fetch data 
-
-    //default test markers
-    //var defaultmark = L.marker([27.9, -81.7]).addTo(map);
-    //defaultmark.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
 
     var marker;
     var popup = L.popup();

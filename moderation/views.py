@@ -51,10 +51,3 @@ class ModerationPanel(APIView): #TODO add some sort of indication it's been togg
         instance = self.get_object(pk)
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-   
-
-class SignUpView(CreateView):
-    form_class = UserCreationForm
-    success_url = reverse_lazy("login")
-    template_name = "registration/signup.html"
