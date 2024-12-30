@@ -1,7 +1,6 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Markers, Verification
+from django.shortcuts import render
+from .models import Markers
 from django.http import JsonResponse
-import requests
 from django.views.decorators.csrf import csrf_exempt
 
 #Rest Framework Imports 
@@ -9,7 +8,6 @@ from rest_framework import generics, permissions, status, mixins
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from .serializers import MarkersSerializer, VerificationSerializer
 from rest_framework.views import APIView # for the map

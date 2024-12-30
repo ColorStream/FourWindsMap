@@ -80,7 +80,7 @@ class MarkersSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        # Construct GeoJSON from the latitude and longitude
+        # manually create longitude and latitude
         geojson_data = {
             "type": "Feature",
             "geometry": {

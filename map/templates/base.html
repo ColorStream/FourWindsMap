@@ -192,7 +192,7 @@
                     </div>                    
                     <div class="mb-3">
                       <label for="a1NoteFormControlInput1" name="a1" class="form-label">Is there anything about your file we should know?</label>
-                      <input type="email" class="form-control" id="a1NoteFormControlInput1" placeholder="Comment here...">
+                      <input type="text" class="form-control" id="a1NoteFormControlInput1" placeholder="Comment here...">
                     </div>
                     
                   </div>
@@ -370,11 +370,14 @@
           alert('Please enter a story into the storytext field in order to submit a marker.');
           return; // stop form submission if validation fails
         }
-        var currentyear = new Date().getFullYear();
-        const fromYear = Number(formData.get('fromyear'));
-        if (fromYear < 1960 || fromYear > currentyear){
-          alert('Please enter a valid year!');
-          return;
+        if (formData.has('fromYear')){ //check only if formData does indeed, have a year
+          var currentyear = new Date().getFullYear();
+          const fromYear = Number(formData.get('fromyear'));
+
+          if (fromYear < 1960 || fromYear > currentyear){
+            alert('Please enter a valid year!');
+            return;
+        }
         }
         
         

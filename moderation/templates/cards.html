@@ -1,41 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %} Moderation Panel {% endblock %}</title>
-
-    <!-- Bootstrap CDN; I might change this out at some point -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-</head>
-<style>
-    .notifications-section .alert {
-    display: none; /* Hidden by default */
-    width: 100%;
-    margin-bottom: 15px;
-    }
-
-    .alert .close {
-        position: absolute;
-        right: 10px;
-        top: 10px;
-    }
-</style>
-<body>
-    <!-- User Nav Heading -->
-    <nav class="navbar bg-body-tertiary">
-        <div class="container-fluid">
-        <span class="navbar-brand mb-0 h1">Currently viewing as {{request.user}}</span>
-            <div class="d-flex">
-                <form method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button class="btn btn-outline-danger" type="submit">Log Out</button>
-                </form>
-            </div>
-        </div>
-    </nav>
-
-  {% for marker in markers %}
+{% for marker in markers %}
     <!-- Delete Marker Modal -->
     <div class="modal fade" id="{{ marker.id }}-deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -67,7 +30,7 @@
     <div class="row row-cols-1 row-cols-md-3 g-4 m-2">
         {% for marker in markers %}
         <div class="col">
-            <div class="card mb-3" id="card-{{ marker.id }}" data-marker-id="{{ marker.id }}">
+            <div class="card mb-3" id="card-{{ marker.id }}"style="max-width: 540px;" data-marker-id="{{ marker.id }}">
                 <nav>
                     <div class="nav nav-tabs mt-3 mx-2" id="nav-tab" role="tablist">
                       <button class="nav-link active" id="nav-marker-tab" data-bs-toggle="tab" data-bs-target="#nav-marker-{{marker.id}}" type="button" role="tab" aria-controls="nav-marker" aria-selected="true">Marker</button>
@@ -122,18 +85,6 @@
     </div>
 
     <script>
-        /*
-        function loadContent() {
-            fetch(`{% url 'cards' %}`)
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('cardscontainer').innerHTML = html;
-                });
-        };
-
-        window.onload = loadContent;
-        */
-
         // Utility function to get CSRF token from cookies
         function getCookie(name) {
             let cookieValue = null;
@@ -166,7 +117,6 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             // checkbox listeners
-
             const checkboxes = document.querySelectorAll('.form-check-input');
 
             checkboxes.forEach(function (checkbox) {
@@ -238,8 +188,8 @@
                 if (response.ok) {
                     console.log(`Marker ${markerId} deleted!`);
                     appendAlert('Marker deleted.', 'success');
-                    const markerColumn = document.querySelector(`#card-${markerId}`).closest('.col');  // Find the closest parent column
-                    if (markerColumn) markerColumn.remove();  // Remove the entire column
+                    const markerCard = document.getElementById(`card-${markerId}`);
+                    if (markerCard) markerCard.remove();
                 } else {
                     console.error(`Failed to delete marker ${markerId}.`);
                 }
@@ -252,10 +202,3 @@
     {% else %}
         <p class="text-center m-4">No markers at the moment.</p>
     {% endif %}
-
-   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-     crossorigin=""></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-</body>
-
