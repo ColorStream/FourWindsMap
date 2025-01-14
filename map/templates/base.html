@@ -5,8 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="shortcut icon" href="{% static 'favicon.ico' %}"/>
+    <title>{% block title %}4Winds Map{% endblock %}</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}"/>
 
     <!-- Bootstrap CDN; I might change this out at some point -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -37,27 +37,22 @@
 </style>
 
 <body>
-  <!--
     <div id="toplayer">
-        <button class="add-btn btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">+</button>
-    </div-->
+        <button class="add-btn btn btn-primary" type="button" id="disclaimerButton" data-bs-toggle="modal" data-bs-target="#disclaimerModal" aria-controls="disclaimerButton">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+          </svg>
+        </button>
+        
+
+        {% if request.user %}
+        <button class="add-btn btn btn-primary" type="button"  aria-controls="offcanvasScrolling">
+        {% endif %}
+    </div>
     <div id="map">
         <div id="newMarker"></div>
     </div>
-
-    <!-- Bootstrap sidebar -->
-    <!-- div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Offcanvas with body scrolling</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-        <div id="dragmarker"></div>
-        <p>Try scrolling the rest of the page to see this option in action.</p>
-    </div>
-    </div -->
-
-    <button type="button" class="invisible btn btn-primary" id="disclaimerButton" data-bs-toggle="modal" data-bs-target="#disclaimerModal">    </button>    
 
     <!-- First Time Disclaimer Popup -->
     <div class="modal fade" id="disclaimerModal" tabindex="-1" aria-labelledby="disclaimerModalLabel" aria-hidden="true">
@@ -73,7 +68,7 @@
                 <button class="nav-link active" id="v-pills-info-tab" data-bs-toggle="pill" data-bs-target="#v-pills-info" type="button" role="tab" aria-controls="v-pills-info" aria-selected="true">Info</button>
                 <button class="nav-link" id="v-pills-guide-tab" data-bs-toggle="pill" data-bs-target="#v-pills-guide" type="button" role="tab" aria-controls="v-pills-guide" aria-selected="false">Guide</button>
                 <button class="nav-link" id="v-pills-contact-tab" data-bs-toggle="pill" data-bs-target="#v-pills-contact" type="button" role="tab" aria-controls="v-pills-contact" aria-selected="false">Contact</button>
-                <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</button>
+                <button class="nav-link" id="v-pills-stack-tab" data-bs-toggle="pill" data-bs-target="#v-pills-stack" type="button" role="tab" aria-controls="v-pills-stack" aria-selected="false">Stack</button>
               </div>
               <div class="tab-content" id="v-pills-tabContent">
                 <div class="tab-pane fade show active" id="v-pills-info" role="tabpanel" aria-labelledby="v-pills-info-tab" tabindex="0">
@@ -108,18 +103,21 @@
                 </div>
                 <div class="tab-pane fade" id="v-pills-guide" role="tabpanel" aria-labelledby="v-pills-guide-tab" tabindex="0">
                   <h5>How to View Markers</h5>
-                  <p>To view a marker, just click on the blue marker symbol, which should display the text above the marker accordingly.</p>
+                  <p>To view a marker, just click on the blue marker symbol, which should display the text above the marker accordingly.
+                    <br><img class="img-fluid m-1" src="{% static 'img/example-marker_guide.png' %}">
+                  </p>
                   <h5>How to Leave a Marker</h5>
                   <p>In order to leave a marker, click the location you'd like to leave your marker. This dialogue will display: <br>
-                    <a></a> <!-- leave picture of prompt window -->
+                    <img class="img-fluid m-1" src="{% static 'img/submit-marker_guide.png' %}"> <br>
                     Clicking "submit marker" will open a window like this: <br>
-                    <a></a> <!-- leave picture of form -->
+                    <img class="img-fluid m-1" src="{% static 'img/marker-form_guide.png' %}"> <br> 
                     If you'd like to leave the year field with the year that you left/graduated from New College, you can. You can also leave it blank.
                     Fill the story field with a story about how New College shaped where you are now or what kind of importance New College holds to you now.
-                    For information on what marker submissions won't be approved, check the <a href="#" data-bs-toggle="pill" data-bs-target="#v-pills-info">Info</a> tab.
-                    <h6>Verification</h6>
+                    For information on what marker submissions won't be approved, check the Info tab. <br>
+                    <h5>Verification</h5>
                     In order to make sure alumni are submitting markers, there's a loose expectation that you can prove that you attended New College. 
                     In the marker submission window, there's two options: a file upload or a questionaire. 
+                    <br> <img class="img-fluid m-1" src="{% static 'img/verif1-form_guide.png' %}"> <img class="img-fluid m-1" src="{% static 'img/verif2-form_guide.png' %}"> <br>
                     In the file upload, you can upload a proof of your time at New College; a photo of yourself at a recognizable part of New College, screenshot of your membership in the Facebook Daimon, or 
                     a photo of your diploma or other documents corroborating your time there. You can also upload a PDF file, either transcripts or again, other corroborating documents. 
                     If you have no files, you have the option to fill out a questionaire about New College culture that will give moderators a glimpse of your familiarity with New College.<br>
@@ -130,7 +128,14 @@
                 <div class="tab-pane fade" id="v-pills-contact" role="tabpanel" aria-labelledby="v-pills-contact-tab" tabindex="0">
                   This site is currently run by thesis student Andy Trinh. You can contact me at <a href= "mailto:a.trinh25@ncf.edu">a.trinh25@ncf.edu</a>.
                 </div>
-                <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab" tabindex="0">...</div>
+                <div class="tab-pane fade" id="v-pills-stack" role="tabpanel" aria-labelledby="v-pills-stack-tab" tabindex="0">
+                  <h4>Stack</h4>
+                  <p>
+                  Hosted using <a href="https://www.heroku.com/">Heroku.</a><br>Front-end using <a href="https://getbootstrap.com/">Bootstrap</a> and the <a href="https://leafletjs.com/">Leaflet</a> map JS library.
+                  <br>Map tile layers provided by the <a href="https://www.arcgis.com/home/item.html?id=7dc6cea0b1764a1f9af2e679f642f0f5">Esri World Topographic Map</a>.
+                  <br>Backend using <a href="https://www.djangoproject.com/">Django</a> and the accompanying <a href="https://www.django-rest-framework.org/">Django REST Framework.</a>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -148,7 +153,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="markerModalTitle">Add Marker</h1>
+          <h1 class="modal-title fs-5" id="markerModalTitle">Add Marker</h1> 
           <button type="button" class="btn-close" id="markerModalClose" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" id="markerModalBody">
@@ -163,7 +168,7 @@
               </div>
               <div class="mb-3">
                 <label for="storytext" class="form-label">Story</label>
-                <textarea class="form-control" id="storytext" name="storytext" rows="3" placeholder="What was your experience at New College like? How did it change you?"></textarea>
+                <textarea class="form-control" id="storytext" name="storytext" rows="3" placeholder="What was your experience at New College like? How did it change you? (350 characters max.)"></textarea>
               </div>
               <!--VERIFICATION SECTION-->
               <h5>
@@ -192,7 +197,7 @@
                     </div>                    
                     <div class="mb-3">
                       <label for="a1NoteFormControlInput1" name="a1" class="form-label">Is there anything about your file we should know?</label>
-                      <input type="text" class="form-control" id="a1NoteFormControlInput1" placeholder="Comment here...">
+                      <input type="text" class="form-control" id="a1NoteFormControlInput1" placeholder="Comment here... (250 characters max.)">
                     </div>
                     
                   </div>
@@ -200,15 +205,15 @@
                     <p>If you don't have anything from your time at New College, I came up with some questions that can hopefully help you prove you were a New College alumni. Answer them the best you can. </p>
                     <div class="mb-3">
                       <label for="a1FormControlTextarea1" class="form-label">What does the acronym "PCP" mean to you? What does it stand for at New College?</label>
-                      <textarea name="a1" class="form-control" id="a1FormControlTextarea1" rows="3"></textarea>
+                      <textarea name="a1" class="form-control" id="a1FormControlTextarea1" placeholder="(250 characters max.)" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
                       <label for="a2FormControlTextarea1" class="form-label">What was one of the notable New College urban legends you remember from your time there?</label>
-                      <textarea name="a2" class="form-control" id="a2FormControlTextarea2" rows="3"></textarea>
+                      <textarea name="a2" class="form-control" id="a2FormControlTextarea2" placeholder="(250 characters max.)" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
                       <label for="a3FormControlTextarea1" class="form-label">What was your favorite course you took at New College? Can you describe it? Which professor was it with?</label>
-                      <textarea name="a3" class="form-control" id="a3FormControlTextarea3" rows="3"></textarea>
+                      <textarea name="a3" class="form-control" id="a3FormControlTextarea3" placeholder="(250 characters max.)" rows="3"></textarea>
                     </div>
                   </div>
                 </div>
@@ -228,14 +233,24 @@
 </body>
 <script>
 
- document.addEventListener("DOMContentLoaded", function () {
-      const dbutton = document.getElementById("disclaimerButton"); 
+  document.addEventListener("DOMContentLoaded", function () {
+    const dbutton = document.getElementById("disclaimerButton"); 
 
-      if (!localStorage.getItem('modalShown')) {
-        dbutton.click(); 
-        //localStorage.setItem('modalShown', 'true'); // set localStorage so it won't show again
-      }
-    });
+    if (!localStorage.getItem('modalShown')) {
+      dbutton.click(); 
+      //localStorage.setItem('modalShown', 'true'); // set localStorage so it won't show again
+    }
+  });
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+
+    const month = date.getMonth() + 1; // JavaScript months are 0-indexed
+    const day = date.getDate();
+    const year = date.getFullYear().toString().slice(-2); // Get last two digits of the year
+
+    return `${month}/${day}/${year}`;
+  }
 
   async function getData() {
       const url = `{% url 'markerslist' %}`; // API endpoint
@@ -261,7 +276,7 @@
                           if (feature.properties) {
                               layer.bindPopup(
                                   `<strong>${feature.properties.fromyear}</strong><br>
-                                  ${feature.properties.storytext}<br>`
+                                  ${feature.properties.storytext}<br><small class="text-secondary">${formatDate(marker.date_posted)}</small>`
                               );
                           }
                       }
@@ -273,138 +288,150 @@
           console.error('Error fetching GeoJSON:', error.message);
       }
   }
-    //map initialization
-    var map = L.map('map', {
-    center: [27.994402, -81.760254],
-    zoom: 7
-    });
 
-    //check https://github.com/leaflet-extras/leaflet-providers
-    var Esri_WorldTopoMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
-    });
+  //map initialization
+  var map = L.map('map', {
+  center: [27.994402, -81.760254],
+  zoom: 7
+  });
 
-    Esri_WorldTopoMap.addTo(map);
+  //https://github.com/leaflet-extras/leaflet-providers
+  var Esri_WorldTopoMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
+  });
+  Esri_WorldTopoMap.addTo(map);
 
+  L.Control.Watermark = L.Control.extend({
+    onAdd: function(map) {
+        var img = L.DomUtil.create('img');
 
-    /*
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
-    */
+        img.src = `{% static 'img/4wm-logo.png' %}`;
+        img.style.width = '250px';
 
-    getData(); //fetch data 
+        return img;
+    },
 
-    var marker;
-    var popup = L.popup();
-
-    // click listener
-    map.on('click', function(e) {
-      var coords = e.latlng
-      var lat = e.latlng.lat;
-      var lng = e.latlng.lng;
-      
-      // if a marker already exists, remove it first
-      if (marker) {
-        map.removeLayer(marker);
-      }
-
-      popup
-            .setLatLng(coords)
-            .setContent('<div class="container text-center"><p>Submit a marker?</p><button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#markerModal"> Open form </button> </div>')
-            .openOn(map);
-
-      // set the coordinates in the hidden form fields
-      document.getElementById('latitude').value = lat;
-      document.getElementById('longitude').value = lng;
-      document.getElementById('coordformdisplay').innerText = `Latitude: ${lat.toFixed(2)}, Longitude: ${lng.toFixed(2)}`;
-    });
-
-
-    function defineAlum()
-    {
-      infotext = document.getElementById('alum-def')
-      if (infotext.textContent == ''){
-        infotext.textContent = 'The New College Alumni association and Daimon define a alumni as people who have finished at least one term at New College of Florida. Please help my attempt to verify the markers submitted by you all!';
-      } else {
-        infotext.textContent = '';
-      }
+    onRemove: function(map) {
+        // Nothing to do here
     }
+  });
 
-    function checkFile(input) { //GPT generated function; from Software Engineering final proj
-        const file = input.files[0];
-        const fileType = file.type.toLowerCase();
-        const allowedExtensions = ["image/jpeg", "image.jpg", "image/png", "application/pdf"];
+  L.control.watermark = function(opts) {
+      return new L.Control.Watermark(opts);
+  }
+  L.control.watermark({ position: 'bottomright' }).addTo(map);
 
-        // Check file type
-        if (!allowedExtensions.includes(fileType)) {
-            alert("Please select a valid image file (JPG, JPEG, PNG), or valid document file (PDF).");
-            input.value = ''; // Clear the file input
-            return;
-        }
+  getData(); //fetch data 
 
-        // Check file name length
-        const fileName = file.name;
-        if (fileName.length > 50) {
-            alert("File name cannot exceed 50 characters.");
-            input.value = ''; // Clear the file input
-            return;
-        }
+  var marker;
+  var popup = L.popup();
 
-        // Check file size
-        const maxSizeBytes = 1 * 1024 * 1024; // Convert MB to bytes
-        if (file.size > maxSizeBytes) {
-            alert("File size cannot exceed 1MB.");
-            input.value = ''; // Clear the file input
-            return;
-        }
-    }
+  // click listener
+  map.on('click', function(e) {
+    var coords = e.latlng
+    var lat = e.latlng.lat;
+    var lng = e.latlng.lng;
     
-    const form = document.getElementById('marker-form');
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();  // prevent the page reload
+    // if a marker already exists, remove it first
+    if (marker) {
+      map.removeLayer(marker);
+    }
 
-        const formData = new FormData(form);
-        if (!formData.has('storytext') || !formData.get('storytext').trim()){
-          alert('Please enter a story into the storytext field in order to submit a marker.');
-          return; // stop form submission if validation fails
-        }
-        if (formData.has('fromYear')){ //check only if formData does indeed, have a year
-          var currentyear = new Date().getFullYear();
-          const fromYear = Number(formData.get('fromyear'));
+    popup
+          .setLatLng(coords)
+          .setContent('<div class="container text-center"><p>Submit a marker?</p><button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#markerModal"> Open form </button> </div>')
+          .openOn(map);
 
-          if (fromYear < 1960 || fromYear > currentyear){
-            alert('Please enter a valid year!');
-            return;
-        }
-        }
-        
-        
-        // Make the AJAX request using fetch API
-        try {
-            const response = await fetch(`{% url 'map' %}`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
-                    'Accept': 'application/json',
-                },
-                body: formData,
-            });
+    // set the coordinates in the hidden form fields
+    document.getElementById('latitude').value = lat;
+    document.getElementById('longitude').value = lng;
+    document.getElementById('coordformdisplay').innerText = `Latitude: ${lat.toFixed(2)}, Longitude: ${lng.toFixed(2)}`;
+  });
 
-            if (response.ok) {
-                const result = await response.json();
-                form.reset();
-                document.getElementById('markerModalClose').click();
-            } else {
-                const errorResult = await response.json();
-                console.error(errorResult);
-            }
-        } catch (error) {
-            console.error(error);
-            //document.getElementById('error-message').style.display = 'block';
-        }
-    });
+
+  function defineAlum()
+  {
+    infotext = document.getElementById('alum-def')
+    if (infotext.textContent == ''){
+      infotext.textContent = 'The New College Alumni association and Daimon define a alumni as people who have finished at least one term at New College of Florida. Please help my attempt to verify the markers submitted by you all!';
+    } else {
+      infotext.textContent = '';
+    }
+  }
+
+  function checkFile(input) { //GPT generated function; from Software Engineering final proj
+      const file = input.files[0];
+      const fileType = file.type.toLowerCase();
+      const allowedExtensions = ["image/jpeg", "image.jpg", "image/png", "application/pdf"];
+
+      // Check file type
+      if (!allowedExtensions.includes(fileType)) {
+          alert("Please select a valid image file (JPG, JPEG, PNG), or valid document file (PDF).");
+          input.value = ''; // Clear the file input
+          return;
+      }
+
+      // Check file name length
+      const fileName = file.name;
+      if (fileName.length > 50) {
+          alert("File name cannot exceed 50 characters.");
+          input.value = ''; // Clear the file input
+          return;
+      }
+
+      // Check file size
+      const maxSizeBytes = 1 * 1024 * 1024; // Convert MB to bytes
+      if (file.size > maxSizeBytes) {
+          alert("File size cannot exceed 1MB.");
+          input.value = ''; // Clear the file input
+          return;
+      }
+  }
+  
+  const form = document.getElementById('marker-form');
+  form.addEventListener('submit', async function(e) {
+      e.preventDefault();  // prevent the page reload
+
+      const formData = new FormData(form);
+      if (!formData.has('storytext') || !formData.get('storytext').trim()){
+        alert('Please enter a story into the storytext field in order to submit a marker.');
+        return; // stop form submission if validation fails
+      }
+      if (formData.has('fromYear')){ //check only if formData does indeed, have a year
+        var currentyear = new Date().getFullYear();
+        const fromYear = Number(formData.get('fromyear'));
+
+        if (fromYear < 1960 || fromYear > currentyear){
+          alert('Please enter a valid year!');
+          return;
+      }
+      }
+      
+      
+      // Make the AJAX request using fetch API
+      try {
+          const response = await fetch(`{% url 'map' %}`, {
+              method: 'POST',
+              headers: {
+                  'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+                  'Accept': 'application/json',
+              },
+              body: formData,
+          });
+
+          if (response.ok) {
+              const result = await response.json();
+              form.reset();
+              document.getElementById('markerModalClose').click();
+          } else {
+              const errorResult = await response.json();
+              console.error(errorResult);
+          }
+      } catch (error) {
+          console.error(error);
+          //document.getElementById('error-message').style.display = 'block';
+      }
+  });
 
 </script>
 </html>

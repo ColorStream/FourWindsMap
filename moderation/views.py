@@ -17,7 +17,3 @@ class ModerationPanel(APIView):
     def get(self, request):
         markers = Markers.objects.all().order_by('-date_posted')
         return Response({'markers': markers})
-
-def cards(request):
-    markers = Markers.objects.all().order_by('-date_posted')
-    return render(request, 'cards.html', {'markers': markers})

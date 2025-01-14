@@ -16,7 +16,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 import os
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Directory where uploaded files will be stored
+# Directory where uploaded files will be stored
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  
 MEDIA_URL = '/media/'
 
 # Quick-start development settings - unsuitable for production
@@ -42,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'map.apps.MapConfig',
-    'text.apps.TextConfig',
     'moderation.apps.ModerationConfig',
     'rest_framework',
 ]
@@ -123,6 +123,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'static')
+        ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

@@ -3,28 +3,6 @@ from rest_framework import serializers
 from .models import Markers, Verification
 from rest_framework.validators import UniqueTogetherValidator
 
-class MarkersListSerializer(serializers.ListSerializer): #this goes first in order to be initialized before the main serializer
-    def update(self, instance, validated_data):
-        # Maps for id->instance and id->data item.
-        marker_mapping = {marker.id: marker for marker in instance}
-        data_mapping = {item['id']: item for item in validated_data}
-
-        # Perform creations and updates.
-        ret = []
-        for marker_id, data in data_mapping.items():
-            marker = marker_mapping.get(marker_id, None)
-            if marker is None:
-                ret.append(self.child.create(data))
-            else:
-                ret.append(self.child.update(marker, data))
-
-        # Perform deletions.
-        for marker_id, marker in marker_mapping.items():
-            if marker_id not in data_mapping:
-                marker.delete()
-
-        return ret
-
 class VerificationSerializer(serializers.ModelSerializer):    
     #marking all as required=False in order to make it so the custom validator works 
     upload = serializers.FileField(max_length=50, allow_empty_file=False, required=False) #max_length caps filename
@@ -69,7 +47,6 @@ class MarkersSerializer(serializers.ModelSerializer):
         geojson_data = serializers.JSONField() 
         id = serializers.IntegerField()
         verification = serializers.PrimaryKeyRelatedField(queryset=Verification.objects.all())
-        list_serializer_class = MarkersListSerializer
         fields = ['id', 'latitude','longitude', 'fromyear', 'storytext', 'date_posted', 'geojson_data', 'approved', 'verification']
         read_only_fields = ['id', 'geojson_data', 'date_posted', 'verification'] #in order for it to be readonly and still visible, it HAS to be duplicated :(
         validators = [

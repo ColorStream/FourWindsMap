@@ -17,9 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
+from django.contrib.staticfiles.storage import staticfiles_storage
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
     path('markers/', views.MarkersCreate.as_view(), name="marker-create-view"),
     path('markers/manage/<int:pk>', views.MarkersRetrieveUpdateDestroy.as_view(), name="marker-update-view"),
     path('markerslist', views.markers_list, name='markerslist'), 
+    path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('favicon.ico'))),
 ]
