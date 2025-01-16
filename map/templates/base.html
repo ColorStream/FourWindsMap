@@ -440,14 +440,14 @@
         alert('Please enter a story into the storytext field in order to submit a marker.');
         return; // stop form submission if validation fails
       }
-      if (formData.has('fromYear')){ //check only if formData does indeed, have a year
+      if (formData.has('fromyear')){ //check only if formData does indeed, have a year
         var currentyear = new Date().getFullYear();
         const fromYear = Number(formData.get('fromyear'));
 
         if (fromYear < 1960 || fromYear > currentyear){
           alert('Please enter a valid year!');
           return;
-      }
+        }
       }
       
       

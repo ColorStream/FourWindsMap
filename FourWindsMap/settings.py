@@ -27,9 +27,9 @@ MEDIA_URL = '/media/'
 SECRET_KEY = 'django-insecure-r!y-81#oicc%u!l4)_#^-=cgruj$z*tky+c)#m0l&gp=vvhuvg'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 LOGIN_REDIRECT_URL = 'moderation-panel'
 LOGOUT_REDIRECT_URL = 'login'
