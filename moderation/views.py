@@ -17,3 +17,6 @@ class ModerationPanel(APIView):
     def get(self, request):
         markers = Markers.objects.all().order_by('-date_posted')
         return Response({'markers': markers})
+    
+def display_file(request):
+    return None

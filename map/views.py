@@ -47,7 +47,7 @@ class MarkersCreate(generics.ListCreateAPIView):
     """
     API endpoint that allows markers to be viewed and posted to by authenticated moderators.
     """
-    queryset = Markers.objects.all() #.order_by('-date_posted')
+    queryset = Markers.objects.all()
     serializer_class = MarkersSerializer
     permission_classes = [permissions.IsAuthenticated]
 

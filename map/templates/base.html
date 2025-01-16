@@ -404,9 +404,9 @@
       }
 
       // Check file size
-      const maxSizeBytes = 1 * 1024 * 1024; // Convert MB to bytes
+      const maxSizeBytes = 8 * 1024 * 1024; // Convert MB to bytes
       if (file.size > maxSizeBytes) {
-          alert("File size cannot exceed 1MB.");
+          alert("File size cannot exceed 8MB.");
           input.value = ''; // Clear the file input
           return;
       }
@@ -470,7 +470,7 @@
           } else {
               const errorResult = await response.json();
               console.error(errorResult);
-              appendAlert('Marker submission failed.', 'success');
+              appendAlert('Marker submission failed.', 'danger');
           }
       } catch (error) {
           console.error(error);

@@ -115,7 +115,9 @@
                         <div class="card-body">
                             {% if marker.verification %}
                             <h5>Verification Details</h5>
-                            <p><strong>File Upload:</strong> <a href="{{ verification.upload.url }}" target="_blank">{{ marker.upload.name }}</a></p>
+                                {% if marker.verification.upload %}
+                                    <p><strong>File Upload:</strong> <a href="{{ marker.verification.upload.url }}" target="_blank">{{ marker.verification.upload.name }}</a></p>
+                                {% endif %}
                             <p><strong>Question 1:</strong> {{ marker.verification.a1 }}</p>
                             <p><strong>Question 2:</strong> {{ marker.verification.a2 }}</p>
                             <p><strong>Question 3:</strong> {{ marker.verification.a3 }}</p>
