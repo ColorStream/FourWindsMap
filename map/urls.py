@@ -24,5 +24,5 @@ urlpatterns = [
     path('markers/', views.MarkersCreate.as_view(), name="marker-create-view"),
     path('markers/manage/<int:pk>', views.MarkersRetrieveUpdateDestroy.as_view(), name="marker-update-view"),
     path('markerslist', views.markers_list, name='markerslist'), 
-    path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('favicon.ico'))),
+    path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('favicon.ico')), name="favicon"),
 ]

@@ -77,7 +77,7 @@
                     - Advertising <br>
                     - Personal information (identifying information such as addresses, etc) <br>
                     - Hate speech <br>
-                    - Overly graphic subject matter <br>
+                    - Overly graphic descriptions of triggering or sensitive subject matter <br>
                     - Solely political messaging <br>
                   </p>
 
@@ -175,11 +175,13 @@
                 </nav>
                 <div class="tab-content p-3" id="nav-tabContent">
                   <div class="tab-pane fade active show" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                    <p>Here, you can upload either an old transcript, your diploma, a photo from your time at New College, or otherwise. This photo is not shared anywhere else! (.img, .png, .pdf only) </p>
+                    <p>Here, you can upload either an old transcript, your diploma, a photo from your time at New College, or otherwise. This photo is not shared anywhere else! (.jpg, .jpeg, .img, .png, .pdf only) </p>
                     <div class="input-group mb-3">
-                      <input type="file" name="upload" onchange="checkFile(this)" accept="image/png, image/jpeg, image/jpg, application/pdf" class="form-control" id="inputGroupFile02">
-                      <label class="input-group-text" for="inputGroupFile02">Upload</label>
-                    </div>                    
+                      <label class="input-group-text" for="inputGroupFile">Upload</label>
+                      <input type="file" name="upload" onchange="checkFile(this)" accept="image/png, image/jpeg, image/jpg, application/pdf" class="form-control" id="inputGroupFile">
+                      <button class="btn btn-outline-danger" type="button" id="fileClear">Clear</button>
+                    </div>
+                               
                     <div class="mb-3">
                       <label for="a1NoteFormControlInput1" name="a1" class="form-label">Is there anything about your file we should know?</label>
                       <input type="text" class="form-control" id="a1NoteFormControlInput1" placeholder="Comment here... (250 characters max.)">
@@ -382,7 +384,6 @@
     document.getElementById('coordformdisplay').innerText = `Latitude: ${lat.toFixed(2)}, Longitude: ${lng.toFixed(2)}`;
   });
 
-
   function defineAlum()
   {
     infotext = document.getElementById('alum-def')
@@ -393,10 +394,15 @@
     }
   }
 
+  const fileClear = document.getElementById('fileClear');
+  fileClear.addEventListener("click", (e) => {
+    document.getElementById('inputGroupFile').value = '';
+  });
+
   function checkFile(input) { //GPT generated function; from Software Engineering final proj
       const file = input.files[0];
       const fileType = file.type.toLowerCase();
-      const allowedExtensions = ["image/jpeg", "image.jpg", "image/png", "application/pdf"];
+      const allowedExtensions = ["image/jpeg", "image/jpg", "image/png", "application/pdf", "image/gif"];
 
       // Check file type
       if (!allowedExtensions.includes(fileType)) {
@@ -495,7 +501,6 @@
 var modButton = L.Control.extend({
     options: {
       position: 'topleft',
-      //control position - allowed: 'topleft', 'topright', 'bottomleft', 'bottomright'
     },
 
     onAdd: function (map) {

@@ -23,11 +23,6 @@ class VerificationSerializer(serializers.ModelSerializer):
         a2 = data.get('a2')
         a3 = data.get('a3')
 
-        if upload and (a2 or a3): #Might remove
-            raise serializers.ValidationError(
-                "Provide either a file for or answers for the validation questions, but not both."
-            )
-
         if not upload and not (a1 and a2 and a3): #this is to make sure someone has done at least one of the verification options
             raise serializers.ValidationError(
                 "You must provide either a file in 'upload' or answers."
