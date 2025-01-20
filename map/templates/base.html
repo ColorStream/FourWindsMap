@@ -88,11 +88,11 @@
                 </div>
                 <div class="tab-pane fade" id="v-pills-guide" role="tabpanel" aria-labelledby="v-pills-guide-tab" tabindex="0">
                   <h5>How to View Markers</h5>
-                  <p>To view a marker, just click on the blue marker symbol, which should display the text above the marker accordingly.
+                  <p class="text-break">To view a marker, just click on the blue marker symbol, which should display the text above the marker accordingly.
                     <br><img class="img-fluid m-1" src="{% static 'img/example-marker_guide.png' %}">
                   </p>
                   <h5>How to Leave a Marker</h5>
-                  <p>In order to leave a marker, click the location you'd like to leave your marker. This dialogue will display: <br>
+                  <p class="text-break">In order to leave a marker, click the location you'd like to leave your marker. This dialogue will display: <br>
                     <img class="img-fluid m-1" src="{% static 'img/submit-marker_guide.png' %}"> <br>
                     Clicking "submit marker" will open a window like this: <br>
                     <img class="img-fluid m-1" src="{% static 'img/marker-form_guide.png' %}"> <br> 
@@ -153,7 +153,8 @@
               </div>
               <div class="mb-3">
                 <label for="storytext" class="form-label">Story</label>
-                <textarea class="form-control" id="storytext" name="storytext" rows="3" placeholder="What was your experience at New College like? How did it change you? (350 characters max.)"></textarea>
+                <textarea class="form-control" data-charmax="750" id="storytext" name="storytext" rows="3" placeholder="What was your experience at New College like? How did it change you?"></textarea>
+                
               </div>
               <!--VERIFICATION SECTION-->
               <h5>
@@ -184,7 +185,7 @@
                                
                     <div class="mb-3">
                       <label for="a1NoteFormControlInput1" name="a1" class="form-label">Is there anything about your file we should know?</label>
-                      <input type="text" class="form-control" id="a1NoteFormControlInput1" placeholder="Comment here... (250 characters max.)">
+                      <textarea name="a1" data-charmax="350" class="form-control" id="a1NoteFormControlInput1" placeholder="Comment here...." rows="1"></textarea>
                     </div>
                     
                   </div>
@@ -192,15 +193,15 @@
                     <p>If you don't have anything from your time at New College, I came up with some questions that can hopefully help you prove you were a New College alumni. Answer them the best you can. </p>
                     <div class="mb-3">
                       <label for="a1FormControlTextarea1" class="form-label">What does the acronym "PCP" mean to you? What does it stand for at New College?</label>
-                      <textarea name="a1" class="form-control" id="a1FormControlTextarea1" placeholder="(250 characters max.)" rows="3"></textarea>
+                      <textarea name="a1" class="form-control" id="a1FormControlTextarea1" data-charmax="350" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
                       <label for="a2FormControlTextarea1" class="form-label">What was one of the notable New College urban legends you remember from your time there?</label>
-                      <textarea name="a2" class="form-control" id="a2FormControlTextarea2" placeholder="(250 characters max.)" rows="3"></textarea>
+                      <textarea name="a2" class="form-control" id="a2FormControlTextarea2" data-charmax="350" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
                       <label for="a3FormControlTextarea1" class="form-label">What was your favorite course you took at New College? Can you describe it? Which professor was it with?</label>
-                      <textarea name="a3" class="form-control" id="a3FormControlTextarea3" placeholder="(250 characters max.)" rows="3"></textarea>
+                      <textarea name="a3" class="form-control" id="a3FormControlTextarea3" data-charmax="350" rows="3"></textarea>
                     </div>
                   </div>
                 </div>
@@ -384,11 +385,46 @@
     document.getElementById('coordformdisplay').innerText = `Latitude: ${lat.toFixed(2)}, Longitude: ${lng.toFixed(2)}`;
   });
 
+  // character counting for textareas
+  function countChar() {
+      let textareas = document.querySelectorAll("textarea");
+
+      textareas.forEach(textarea => {
+          let charMax = parseInt(textarea.getAttribute('data-charmax'), 10); //retrieve max character
+          let counterP = textarea.nextElementSibling;
+          if (!counterP || !counterP.classList.contains('char-counter')) {
+              counterP = document.createElement('p');
+              counterP.classList.add('char-counter');
+              counterP.style.fontSize = 'small';
+              counterP.style.color = 'grey';
+              counterP.style.marginTop = '4px';
+              counterP.style.marginBottom = '0px';
+              counterP.style.textAlign = 'right';
+              textarea.parentNode.insertBefore(counterP, textarea.nextSibling);
+          }
+
+          // counter
+          textarea.addEventListener('input', function () {
+              let charCount = textarea.value.length;
+              counterP.textContent = `${charCount} / ${charMax} characters`;
+
+              if (charMax && charCount > charMax) { //red if exceeds limit
+                  counterP.style.color = 'red';
+              } else {
+                  counterP.style.color = 'grey'; // reset color if within limit
+              }
+          });
+      });
+  }
+  
+  window.onload = countChar;
+
   function defineAlum()
   {
     infotext = document.getElementById('alum-def')
     if (infotext.textContent == ''){
-      infotext.textContent = 'The New College Alumni association and Daimon define a alumni as people who have finished at least one term at New College of Florida. Please help my attempt to verify the markers submitted by you all!';
+      infotext.textContent = `The New College Alumni association and Daimon define a alumni as people who have 
+      finished at least one term at New College of Florida. Please help my attempt to verify the markers submitted by you all!`;
     } else {
       infotext.textContent = '';
     }

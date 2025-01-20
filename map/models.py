@@ -7,9 +7,9 @@ from django.db.models import UniqueConstraint
 
 class Verification(models.Model):
     upload = models.ImageField(null=True) #requires pillow
-    a1 = models.CharField(null=True, max_length=250) #a is short for answers
-    a2 = models.CharField(null=True, max_length=250)
-    a3 = models.CharField(null=True, max_length=250)
+    a1 = models.CharField(null=True, max_length=350) #a is short for answers
+    a2 = models.CharField(null=True, max_length=350)
+    a3 = models.CharField(null=True, max_length=350)
 
     def clean(self): #In case it somehow slips through the cracks...
         cleaned_data = super().clean()
@@ -26,7 +26,7 @@ class Markers(models.Model):
     longitude = models.FloatField(null=False)
     fromyear = models.SmallIntegerField(null=True)
     geojson_data = models.JSONField(default=list, null=False)
-    storytext = models.CharField(max_length=350, null=False)
+    storytext = models.CharField(max_length=750, null=False)
     date_posted = models.DateTimeField(auto_now_add=True)
     approved = models.BooleanField(default=False)
 
