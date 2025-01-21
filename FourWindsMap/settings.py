@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'map.apps.MapConfig',
     'moderation.apps.ModerationConfig',
     'rest_framework',
+    'django_minify_html',
 ]
 
 MIDDLEWARE = [
@@ -60,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_minify_html.middleware.MinifyHtmlMiddleware',
 ]
 
 ROOT_URLCONF = 'FourWindsMap.urls'
