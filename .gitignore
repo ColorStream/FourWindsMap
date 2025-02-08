@@ -11,6 +11,7 @@ __pycache__/
 .LSOverride
 db.sqlite3
 .env
+.pyc
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

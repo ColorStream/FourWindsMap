@@ -538,10 +538,9 @@
           } else {
               const errorResult = await response.json();
               console.error(errorResult);
-              appendMarkerAlert(`Failed: ${errorResult}`, 'danger');
               if (errorResult.non_field_errors) {
                   console.error(errorResult.non_field_errors[0]);  // Log error to console
-                  appendMarkerAlert(`Failed: ${errorResult.non_field_errors[0]}`, 'danger');
+                  appendMarkerAlert(`${errorResult.non_field_errors[0]}`, 'danger');
                 } else {
                   appendMarkerAlert(`Failed: ${errorResult}`, 'danger');
               }
@@ -549,7 +548,7 @@
           }
       } catch (error) {
           console.error(error);
-          appendMarkerAlert(`Failed: ${error}`, 'danger');
+          appendMarkerAlert(`${error}`, 'danger');
           appendAlert('Marker submission failed.', 'danger');
           //document.getElementById('error-message').style.display = 'block';
       }
