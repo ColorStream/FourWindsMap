@@ -143,6 +143,7 @@
         </div>
         <div class="modal-body" id="markerModalBody">
             <div class="mb-3">
+              <div id="markerAlertPlaceholder"></div>
               <form id="marker-form" method="POST" enctype="multipart/form-data" action="{% url 'map' %}">
                 {% csrf_token %}
                 <input type="hidden" id="latitude" name="latitude">
@@ -482,6 +483,21 @@
           wrapper.remove();
       }, 5000); // 5000ms = 5 seconds
   }
+
+  const markerAlertPlaceholder = document.getElementById('markerAlertPlaceholder');
+  const appendMarkerAlert = (message, type) => {
+      const mwrapper = document.createElement('div');
+      markerAlertPlaceholder.innerHTML = '';
+      
+      mwrapper.innerHTML = [
+          `<div class="alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x m-2" role="alert" style="z-index: 1050; width: 300px;">`,
+          `   <div>${message}</div>`,
+          '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+          '</div>'
+      ].join('');
+      
+      markerAlertPlaceholder.append(mwrapper);
+  }
   
   const form = document.getElementById('marker-form');
   form.addEventListener('submit', async function(e) {
@@ -522,10 +538,19 @@
           } else {
               const errorResult = await response.json();
               console.error(errorResult);
+              appendMarkerAlert(`Failed: ${errorResult}`, 'danger');
+              if (errorResult.non_field_errors) {
+                  console.error(errorResult.non_field_errors[0]);  // Log error to console
+                  appendMarkerAlert(`Failed: ${errorResult.non_field_errors[0]}`, 'danger');
+                } else {
+                  appendMarkerAlert(`Failed: ${errorResult}`, 'danger');
+              }
               appendAlert('Marker submission failed.', 'danger');
           }
       } catch (error) {
           console.error(error);
+          appendMarkerAlert(`Failed: ${error}`, 'danger');
+          appendAlert('Marker submission failed.', 'danger');
           //document.getElementById('error-message').style.display = 'block';
       }
   });

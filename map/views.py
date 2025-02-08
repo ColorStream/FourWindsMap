@@ -39,7 +39,7 @@ class Map(APIView):
                     return Response({"success": "Marker created successfully!"}, status=status.HTTP_201_CREATED)
             else:
                 return Response(verifserializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return render(request, 'map.html', {'markers': queryset})
+        return render(request, 'base.html', {'markers': queryset})
 
     
 
