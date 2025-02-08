@@ -9,6 +9,7 @@ __pycache__/
 .DS_Store  
 .AppleDouble  
 .LSOverride
+db.sqlite3
 .env
 
 # Byte-compiled / optimized / DLL files
